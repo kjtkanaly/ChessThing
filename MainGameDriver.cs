@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainGameDriver : MonoBehaviour
 {
-    public DrawBoard drawBoard;
-    public ChessPiece chessPieceClass;
+    public ChessBoard chessBoard;
+    public RawImage boardImage;
     public GameObject chessPiecePreFab;
     public List<GameObject> chessPieces;
     public Sprite[] WhiteSpriteList, BlackSpriteList;
-
     public int[] piecePositions;
     private string startingFENString = 
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -17,10 +17,10 @@ public class MainGameDriver : MonoBehaviour
 
     void Start()
     {
-        drawBoard.main();
+        initBoard();
 
-        definePiecePositions(drawBoard.textureSize.x / 16, 
-                             drawBoard.textureSize.x / 8);
+        definePiecePositions(chessBoard.textureSize.x / 16, 
+                             chessBoard.textureSize.x / 8);
 
         for (int i = 0; i < maxPossiblePieces; i++)
         {
@@ -34,6 +34,22 @@ public class MainGameDriver : MonoBehaviour
         }
 
         piecePositions = initBoardWithPieces(startingFENString);
+    }
+
+    public void initBoard()
+    {
+        Texture2D texture = new Texture2D(chessBoard.textureSize.x, 
+                                          chessBoard.textureSize.y);
+
+        RawImage BoardImage = GameObject.FindGameObjectWithTag("Board").
+                              GetComponent<RawImage>();
+        BoardImage.texture = texture;
+
+        texture = ChessBoard.drawChessBoard(texture, 
+                                            chessBoard.LightSpaceColor, 
+                                            chessBoard.DarkSpaceColor);
+        
+        texture.Apply();
     }
 
     public void definePiecePositions(int center, int spacing)
