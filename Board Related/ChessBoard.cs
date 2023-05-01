@@ -3,30 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DrawBoard : MonoBehaviour
+public class ChessBoard : MonoBehaviour
 {
     public Vector2Int textureSize = new Vector2Int(440, 440);
     public Texture2D texture;
-    public RawImage BoardImage;
 
     public Color DarkSpaceColor = new Color(118, 150, 86);
     public Color LightSpaceColor = new Color(238, 238, 210);
 
-    public void main()
-    {
-        texture = new Texture2D(textureSize.x, textureSize.y);
-
-        BoardImage = GameObject.FindGameObjectWithTag("Board").
-                     GetComponent<RawImage>();
-        BoardImage.texture = texture;
-
-        texture = drawChessBoard(texture, LightSpaceColor, DarkSpaceColor);
-        
-        texture.Apply();
-    }
-
-    public Texture2D drawChessBoard(Texture2D texture, Color lightColor, 
-                                    Color darkColor)
+    public static Texture2D drawChessBoard(Texture2D texture, Color lightColor, 
+                                           Color darkColor)
     {   
         int rowDivValue = texture.width / 8;
         int colDivValue = texture.height / 8;

@@ -38,6 +38,31 @@ public class ChessPiece : MonoBehaviour
         Black = 16
     }
 
+
+    public static ChessPiece.Color getPieceColorFromInt(int pieceColorValue)
+    {
+        ChessPiece.Color pieceColor = ChessPiece.Color.White;
+
+        if ((pieceColorValue - 8) > 6)
+        {
+            pieceColor = ChessPiece.Color.Black;
+        }
+
+        return pieceColor;
+    }
+
+
+    public static ChessPiece.Type getPieceTypeFromInt(int pieceTypeValue)
+    {
+        while (pieceTypeValue > 6)
+        {
+            pieceTypeValue -= 8;
+        }
+        
+        return (ChessPiece.Type)pieceTypeValue;
+    }
+
+
     public static void setPieceSprite(GameObject piece, ChessPiece pieceInfo)
     {
         MainGameDriver GameDrive = 

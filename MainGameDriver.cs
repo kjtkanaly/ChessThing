@@ -1,42 +1,51 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainGameDriver : MonoBehaviour
 {
-    public DrawBoard drawBoard;
-    public ChessPiece chessPieceClass;
+    public ChessBoard chessBoard;
+    public RawImage boardImage;
     public GameObject chessPiecePreFab;
     public List<GameObject> chessPieces;
     public Sprite[] WhiteSpriteList, BlackSpriteList;
-
     public int[] piecePositions;
-    private string startingFENString = 
+    const string startingFENString = 
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-    private int maxPossiblePieces = 32;
+    const int maxNumberOfPieces = 32;
 
     void Start()
     {
-        drawBoard.main();
+        initChessBoard();
 
-        definePiecePositions(drawBoard.textureSize.x / 16, 
-                             drawBoard.textureSize.x / 8);
+        calcBoardPositions(chessBoard.textureSize.x / 16, 
+                           chessBoard.textureSize.x / 8);
 
-        for (int i = 0; i < maxPossiblePieces; i++)
-        {
-            GameObject newPiece = Instantiate(chessPiecePreFab, 
-                                              new Vector3Int(0, 0, 0), 
-                                              Quaternion.identity);
+        initChessGameObjects();
 
-            newPiece.SetActive(false);
+        int[] startingBoard = DecodeFENString(startingFENString);
 
-            chessPieces.Add(newPiece);
-        }
-
-        piecePositions = initBoardWithPieces(startingFENString);
+        populateBoard(startingBoard);
     }
 
-    public void definePiecePositions(int center, int spacing)
+    public void initChessBoard()
+    {
+        Texture2D texture = new Texture2D(chessBoard.textureSize.x, 
+                                          chessBoard.textureSize.y);
+
+        RawImage BoardImage = GameObject.FindGameObjectWithTag("Board").
+                              GetComponent<RawImage>();
+        BoardImage.texture = texture;
+
+        texture = ChessBoard.drawChessBoard(texture, 
+                                            chessBoard.LightSpaceColor, 
+                                            chessBoard.DarkSpaceColor);
+        
+        texture.Apply();
+    }
+
+    public void calcBoardPositions(int center, int spacing)
     {
         piecePositions = new int[8];
 
@@ -46,52 +55,55 @@ public class MainGameDriver : MonoBehaviour
         }
     }
 
-    public int[] initBoardWithPieces(string startingFENString)
+    public void initChessGameObjects()
     {
-        int[] startingBoard = DecodeFENString(startingFENString); 
+        for (int i = 0; i < maxNumberOfPieces; i++)
+        {
+            GameObject newPiece = Instantiate(chessPiecePreFab, 
+                                              new Vector3Int(0, 0, 0), 
+                                              Quaternion.identity);
+
+            newPiece.SetActive(false);
+
+            chessPieces.Add(newPiece);
+        }
+    }
+
+    public void populateBoard(int[] startingBoard)
+    { 
         int pieceBankIndex = 0; 
 
         for (int i = 0; i < startingBoard.Length; i++)
         {
             if (startingBoard[i] > 0)
             {   
-                ChessPiece pieceInfo = chessPieces[pieceBankIndex].
-                                           GetComponent<ChessPiece>();
+                GameObject chessPiece = chessPieces[pieceBankIndex];
+                ChessPiece pieceInfo = chessPiece.GetComponent<ChessPiece>();
 
-                ChessPiece.Color thisColor = ChessPiece.Color.White;
-                if ((startingBoard[i] - 8) > 6)
-                {
-                    thisColor = ChessPiece.Color.Black;
-                }
+                ChessPiece.Type pieceType = ChessPiece.getPieceTypeFromInt(
+                    startingBoard[i]);
+                ChessPiece.Color pieceColor = ChessPiece.getPieceColorFromInt(
+                    startingBoard[i]);
 
-                int pieceValueHolder = startingBoard[i];
-
-                while (pieceValueHolder > 6)
-                {
-                    pieceValueHolder -= 8;
-                }
-                
-                ChessPiece.Type thisType = (ChessPiece.Type)pieceValueHolder;
-
-                pieceInfo.InitChessPiece(thisType, 
-                                         thisColor,
+                pieceInfo.InitChessPiece(pieceType, 
+                                         pieceColor,
                                          new Vector2Int(i % 8, 
                                                         i / 8));
-                chessPieces[pieceBankIndex].transform.position = 
-                    new Vector3(piecePositions[pieceInfo.pos.x], 
-                                piecePositions[pieceInfo.pos.y]);
 
-                ChessPiece.setPieceSprite(chessPieces[pieceBankIndex], 
+                chessPiece.transform.position = new Vector3(
+                    piecePositions[pieceInfo.pos.x], 
+                    piecePositions[pieceInfo.pos.y]);
+
+                ChessPiece.setPieceSprite(chessPiece, 
                                           pieceInfo);
 
-                chessPieces[pieceBankIndex].SetActive(true);
+                chessPiece.SetActive(true);
 
                 pieceBankIndex += 1;
             }
         }
-
-        return startingBoard;
     }
+
 
     public int[] DecodeFENString(string fenString)
     {
