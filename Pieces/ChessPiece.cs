@@ -8,6 +8,7 @@ public class ChessPiece : MonoBehaviour
     public Color color;
     public Vector2Int pos;
     public int value;
+    public static string pieceChars = "kpnbrq";
 
     public void InitChessPiece(Type typeValue, 
                                Color colorValue, 
@@ -81,71 +82,34 @@ public class ChessPiece : MonoBehaviour
             pieceSR.sprite = GameDrive.BlackSpriteList[(int)pieceInfo.type - 1];
         }
     }
-    
+
 
     public static int getPieceValue(char pieceChar)
     {
-        int piece = (int) ChessPiece.Type.Null +  
-                    (int) ChessPiece.Color.Null;
+        int pieceValue = (int) ChessPiece.Type.Null +  
+                         (int) ChessPiece.Color.Null;
 
-        switch (pieceChar)
+        char pieceCharLower = char.ToLower(pieceChar);
+
+        for (int typeIndex = 0; typeIndex < pieceChars.Length; typeIndex++)
         {
-            case 'p':
-                piece = (int) ChessPiece.Type.Pawn +
-                        (int) ChessPiece.Color.Black;
-                break;
-            case 'n':
-                piece = (int) ChessPiece.Type.Knight +  
-                        (int) ChessPiece.Color.Black;
-                break;
-            case 'b':
-                piece = (int) ChessPiece.Type.Bishop +
-                        (int) ChessPiece.Color.Black;
-                break;
-            case 'r':
-                piece = (int) ChessPiece.Type.Rook +
-                        (int) ChessPiece.Color.Black;
-                break;
-            case 'q':
-                piece = (int) ChessPiece.Type.Queen +
-                        (int) ChessPiece.Color.Black;
-                break;
-            case 'k':
-                piece = (int) ChessPiece.Type.King + 
-                        (int) ChessPiece.Color.Black;
-                break;
+            if (pieceCharLower == pieceChars[typeIndex])
+            {
+                pieceValue = 1 + typeIndex;
 
-            case 'P':
-                piece = (int) ChessPiece.Type.Pawn +
-                        (int) ChessPiece.Color.White;
+                if (char.IsUpper(pieceChar))
+                {
+                    pieceValue += (int) ChessPiece.Color.White;
+                }
+                else
+                {
+                    pieceValue += (int) ChessPiece.Color.Black;
+                }
+
                 break;
-            case 'N':
-                piece = (int) ChessPiece.Type.Knight +  
-                        (int) ChessPiece.Color.White;
-                break;
-            case 'B':
-                piece = (int) ChessPiece.Type.Bishop +
-                        (int) ChessPiece.Color.White;
-                break;
-            case 'R':
-                piece = (int) ChessPiece.Type.Rook +
-                        (int) ChessPiece.Color.White;
-                break;
-            case 'Q':
-                piece = (int) ChessPiece.Type.Queen +
-                        (int) ChessPiece.Color.White;
-                break;
-            case 'K':
-                piece = (int) ChessPiece.Type.King + 
-                        (int) ChessPiece.Color.White;
-                break;
-            
-            default:
-                piece = -1;
-                break;
+            }
         }
 
-        return piece;
-
+        return pieceValue;
     }
 }
