@@ -1,22 +1,24 @@
-!TO DO
+# Chess Thing
 
-! Transition to Unity
-X Generate Board using function logic in python
-X Get piece class setup and array of all pieces
-X Transfer FEN interp fx to Unity from python
-X Load starting FEN string
-X Learn how to use constructors of class
-- Clean up the code
-  X Move the board initial from ChessPiece to MainGameDriver
-  X Move alot of functions from chesspiece to mainGameDriver
-- Work on movement
-  X Be able to pickup a piece
-    - Prevent the user from being able to pick up more than one at a time
-  - Determine the possible moves for a piece
-  - Display those moves
-  - Be able to "place" a piece on the spot
+## Overview
 
-- Take Model to unity
-- Upload Sprites
-- Generate board in unity
-- Display start state in unity
+This project will be an outlet for me to return and finish an old project, writng a game engine for chess, and explore AI via chess.
+
+## To Do List
+
+### Unity Tasks
+- [x] Generate Board using function logic writen in python model
+- [x] Get piece class setup and array of all pieces
+- [x] Upload Sprites
+- [x] Transfer FEN interp fx to Unity from python
+- [x] Load starting FEN string
+- [x] Learn how to use constructors of class
+- [x] Clean up the code
+  - [x] Move the board initial from ChessPiece to MainGameDriver
+  - [x] Move alot of functions from chesspiece to mainGameDriver
+- [ ] Work on movement
+  [x] Be able to pickup a piece
+    - [ ] Prevent the user from being able to pick up more than one at a time
+  - [ ] Determine the possible moves for a piece
+  - [ ] Display those moves
+  - [ ] Be able to "place" a piece on the spot
