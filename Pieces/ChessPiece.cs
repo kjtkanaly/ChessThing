@@ -116,11 +116,23 @@ public class ChessPiece : MonoBehaviour
 
     //-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-
 
-    void Update()
+    private bool isSelected = false;
+
+    void FixedUpdate()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (isSelected)
         {
-            print("Test");
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(
+                                        Input.mousePosition);
+            mousePosition.z = 0;
+            this.transform.position = mousePosition;
         }
+    }
+
+    void OnMouseDown()
+    {
+        print((type, color));
+
+        isSelected = true;
     }
 }
