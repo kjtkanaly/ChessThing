@@ -11,6 +11,7 @@ public class MainGameDriver : MonoBehaviour
     public List<GameObject> chessPieces;
     public Sprite[] WhiteSpriteList, BlackSpriteList;
     public List<int> piecePositions;
+    public bool aPieceIsSelected = false;
     const string startingFENString = 
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     const int maxNumberOfPieces = 32;

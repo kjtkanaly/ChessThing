@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ChessPiece : MonoBehaviour
 {
+    public MainGameDriver mainGameDriver;
     public Type type;
     public Color color;
     public Vector2Int pos;
@@ -118,6 +119,18 @@ public class ChessPiece : MonoBehaviour
 
     private bool isSelected = false;
 
+    void Start()
+    {
+        mainGameDriver = GameObject.FindGameObjectWithTag("Game Control").
+                         GetComponent<MainGameDriver>();
+
+        if (mainGameDriver == null)
+        {
+            Debug.LogError("Main Game Driver couldn't be found. Check for" + 
+                           "updated tage");
+        }
+    }
+
     void FixedUpdate()
     {
         if (isSelected)
@@ -131,8 +144,12 @@ public class ChessPiece : MonoBehaviour
 
     void OnMouseDown()
     {
-        print((type, color));
+        if (!mainGameDriver.aPieceIsSelected)
+        {
+            print((type, color));
 
-        isSelected = true;
+            isSelected = true;
+            mainGameDriver.aPieceIsSelected = true;
+        }
     }
 }

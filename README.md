@@ -17,8 +17,9 @@ This project will be an outlet for me to return and finish an old project, writn
   - [x] Move the board initial from ChessPiece to MainGameDriver
   - [x] Move alot of functions from chesspiece to mainGameDriver
 - [ ] Work on movement
-  [x] Be able to pickup a piece
-    - [ ] Prevent the user from being able to pick up more than one at a time
+  - [x] Be able to pickup a piece
+  - [x] Prevent the user from being able to pick up more than one at a time
+  - [ ] Be able to set a piece down
   - [ ] Determine the possible moves for a piece
   - [ ] Display those moves
   - [ ] Be able to "place" a piece on the spot
