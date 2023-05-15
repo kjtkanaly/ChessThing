@@ -112,4 +112,15 @@ public class ChessPiece : MonoBehaviour
 
         return pieceValue;
     }
+
+
+    //-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            print("Test");
+        }
+    }
 }
