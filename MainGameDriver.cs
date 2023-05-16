@@ -12,6 +12,8 @@ public class MainGameDriver : MonoBehaviour
     public Sprite[] WhiteSpriteList, BlackSpriteList;
     public List<int> piecePositions;
     public bool aPieceIsSelected = false;
+    public int normalSpriteLayer = 50;
+    public int selectedSpriteLayer = 60;
     const string startingFENString = 
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     const int maxNumberOfPieces = 32;

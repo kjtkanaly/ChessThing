@@ -19,7 +19,8 @@ This project will be an outlet for me to return and finish an old project, writn
 - [ ] Work on movement
   - [x] Be able to pickup a piece
   - [x] Prevent the user from being able to pick up more than one at a time
-  - [ ] Be able to set a piece down
+  - [x] Be able to set a piece down
+  - [x] Set the selected piece to be on a higher sprite level
   - [ ] Determine the possible moves for a piece
   - [ ] Display those moves
   - [ ] Be able to "place" a piece on the spot

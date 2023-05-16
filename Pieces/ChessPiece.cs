@@ -5,6 +5,7 @@ using UnityEngine;
 public class ChessPiece : MonoBehaviour
 {
     public MainGameDriver mainGameDriver;
+    public SpriteRenderer pieceSprite;
     public Type type;
     public Color color;
     public Vector2Int pos;
@@ -124,6 +125,8 @@ public class ChessPiece : MonoBehaviour
         mainGameDriver = GameObject.FindGameObjectWithTag("Game Control").
                          GetComponent<MainGameDriver>();
 
+        pieceSprite = this.GetComponent<SpriteRenderer>();
+
         if (mainGameDriver == null)
         {
             Debug.LogError("Main Game Driver couldn't be found. Check for" + 
@@ -148,8 +151,20 @@ public class ChessPiece : MonoBehaviour
         {
             print((type, color));
 
+            pieceSprite.sortingOrder = mainGameDriver.selectedSpriteLayer;
+
             isSelected = true;
             mainGameDriver.aPieceIsSelected = true;
+        }
+
+        else if (mainGameDriver.aPieceIsSelected && isSelected)
+        {
+            print("Setting the piece down.");
+
+            pieceSprite.sortingOrder = mainGameDriver.normalSpriteLayer;
+
+            isSelected = false;
+            mainGameDriver.aPieceIsSelected = false;
         }
     }
 }
