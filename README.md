@@ -22,7 +22,7 @@ This project will be an outlet for me to return and finish an old project, writn
   - [x] Be able to set a piece down
   - [x] Set the selected piece to be on a higher sprite level
   - [x] Set the piece down on the closet grid spot
-- [ ] Implament game rules
+- [ ] Implement game rules
   - [ ] Determine the possible moves for a piece
   - [ ] Display those moves
   - [ ] Be able to "place" a piece on the spot
