@@ -11,6 +11,7 @@ public class MainGameDriver : MonoBehaviour
     public List<GameObject> chessPieces;
     public Sprite[] WhiteSpriteList, BlackSpriteList;
     public List<int> piecePositions;
+    public int[,] miniGameBoard;
     public bool aPieceIsSelected = false;
     public int normalSpriteLayer = 50;
     public int selectedSpriteLayer = 60;
@@ -30,6 +31,8 @@ public class MainGameDriver : MonoBehaviour
         int[] startingBoard = DecodeFENString(startingFENString);
 
         populateBoard(startingBoard);
+
+        debugMiniBoard(miniGameBoard);
     }
 
     public void initChessBoard()
@@ -76,7 +79,9 @@ public class MainGameDriver : MonoBehaviour
 
     public void populateBoard(int[] startingBoard)
     { 
-        int pieceBankIndex = 0; 
+        int pieceBankIndex = 0;
+
+        miniGameBoard = new int[8, 8];
 
         for (int i = 0; i < startingBoard.Length; i++)
         {
@@ -103,6 +108,9 @@ public class MainGameDriver : MonoBehaviour
                                           pieceInfo);
 
                 chessPiece.SetActive(true);
+
+                // Update the mini board
+                miniGameBoard[pieceInfo.pos.x, pieceInfo.pos.y] = pieceInfo.value;
 
                 pieceBankIndex += 1;
             }
@@ -151,5 +159,20 @@ public class MainGameDriver : MonoBehaviour
         }
         
         return true;
+    }
+
+    private void debugMiniBoard(int[,] miniGameBoard)
+    {
+        for (int row = 0; row < miniGameBoard.GetLength(0); row++)
+        {
+            string rowValues = "";
+
+            for (int col = 0; col < miniGameBoard.GetLength(1); col++)
+            {
+                rowValues += miniGameBoard[col, row].ToString() + ", ";
+            }
+
+            print(rowValues);
+        }
     }
 }
