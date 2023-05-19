@@ -28,11 +28,13 @@ public class MainGameDriver : MonoBehaviour
 
         initChessGameObjects();
 
-        int[] startingBoard = DecodeFENString(startingFENString);
+        miniGameBoard = new int[8, 8];
 
-        populateBoard(startingBoard);
+        DecodeFENString(startingFENString);
 
         debugMiniBoard();
+
+        populateBoard();
     }
 
     public void initChessBoard()
@@ -60,7 +62,7 @@ public class MainGameDriver : MonoBehaviour
             piecePositions.Add(center + (i * spacing));
         }
 
-        piecePositions.Reverse();
+        //piecePositions.Reverse();
     }
 
     public void initChessGameObjects()
@@ -77,43 +79,38 @@ public class MainGameDriver : MonoBehaviour
         }
     }
 
-    public void populateBoard(int[] startingBoard)
+    public void populateBoard()
     { 
         int pieceBankIndex = 0;
 
-        miniGameBoard = new int[8, 8];
-
-        for (int i = 0; i < startingBoard.Length; i++)
+        for (int row = miniGameBoard.GetLength(0) - 1; row >= 0; row--)
         {
-            if (startingBoard[i] > 0)
-            {   
-                ChessPiece pieceInfo = chessPieces[pieceBankIndex];
-                GameObject chessPiece = pieceInfo.gameObject;
+            for (int col = 0; col < miniGameBoard.GetLength(1); col++)
+                if (miniGameBoard[col, row] > 0)
+                {   
+                    ChessPiece pieceInfo = chessPieces[pieceBankIndex];
+                    GameObject chessPiece = pieceInfo.gameObject;
 
-                ChessPiece.Type pieceType = ChessPiece.getPieceTypeFromInt(
-                    startingBoard[i]);
-                ChessPiece.Color pieceColor = ChessPiece.getPieceColorFromInt(
-                    startingBoard[i]);
+                    ChessPiece.Type pieceType = ChessPiece.getPieceTypeFromInt(
+                        miniGameBoard[col, row]);
+                    ChessPiece.Color pieceColor = ChessPiece.getPieceColorFromInt(
+                        miniGameBoard[col, row]);
 
-                pieceInfo.InitChessPiece(pieceType, 
-                                         pieceColor,
-                                         new Vector2Int(i % 8, 
-                                                        i / 8));
+                    pieceInfo.InitChessPiece(pieceType, 
+                                            pieceColor,
+                                            new Vector2Int(col, row));
 
-                chessPiece.transform.position = new Vector3(
-                    piecePositions[pieceInfo.pos.x], 
-                    piecePositions[pieceInfo.pos.y]);
+                    chessPiece.transform.position = new Vector3(
+                        piecePositions[pieceInfo.pos.x], 
+                        piecePositions[pieceInfo.pos.y]);
 
-                ChessPiece.setPieceSprite(chessPiece, 
-                                          pieceInfo);
+                    ChessPiece.setPieceSprite(chessPiece, 
+                                            pieceInfo);
 
-                chessPiece.SetActive(true);
+                    chessPiece.SetActive(true);
 
-                // Update the mini board
-                miniGameBoard[pieceInfo.pos.x, pieceInfo.pos.y] = pieceInfo.value;
-
-                pieceBankIndex += 1;
-            }
+                    pieceBankIndex += 1;
+                }
         }
     }
 
@@ -124,6 +121,9 @@ public class MainGameDriver : MonoBehaviour
 
         int fenIndex = 0;
         int boardIndex = 0;
+
+        int row = 7;
+        int col = 0;
 
         // Replace the '/' and split at the first ' '
         fenString = fenString.Replace("/", string.Empty);
@@ -138,11 +138,23 @@ public class MainGameDriver : MonoBehaviour
                                               fenString[fenIndex]);
 
                 boardIndex++;
+
+                miniGameBoard[col, row] = ChessPiece.getPieceValue(
+                                              fenString[fenIndex]);
+                
+                col += 1;
             }
             // FEN is blank space
             else
             {
                 boardIndex += int.Parse("" + fenString[fenIndex]);
+                col += int.Parse("" + fenString[fenIndex]);
+            }
+
+            if (col >= 8)
+            {
+                col = 0;
+                row -= 1;
             }
 
             fenIndex++;
@@ -167,7 +179,7 @@ public class MainGameDriver : MonoBehaviour
     {
         string boardString = "-------------------------\n";
 
-        for (int row = 0; row < miniGameBoard.GetLength(0); row++)
+        for (int row = miniGameBoard.GetLength(0) - 1; row >= 0; row--)
         {
             for (int col = 0; col < miniGameBoard.GetLength(1); col++)
             {   

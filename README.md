@@ -24,9 +24,9 @@ This project will be an outlet for me to return and finish an old project, writn
   - [x] Set the piece down on the closet grid spot
 - [ ] Implement game rules
   - [x] Make a mini version of the board that is just index based
-    - [ ] Fix the gird being horizontally flipped
+    - [x] Fix the gird being horizontally flipped
     - [x] Make the mini board debug more fancy?
-  - [ ] Destroy piece when a piece is placed on it
+  - [x] Destroy piece when a piece is placed on it
   - [ ] Determine the possible moves for a piece
   - [ ] Display those moves
   - [ ] Be able to "place" a piece on the spot
