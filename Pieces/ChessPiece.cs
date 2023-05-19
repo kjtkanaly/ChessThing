@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class ChessPiece : MonoBehaviour
 {
+    public MainGameDriver mainGameDriver;
+    public SpriteRenderer pieceSprite;
     public Type type;
     public Color color;
     public Vector2Int pos;
     public int value;
+    public static string pieceChars = "kpnbrq";
 
     public void InitChessPiece(Type typeValue, 
                                Color colorValue, 
@@ -81,71 +84,119 @@ public class ChessPiece : MonoBehaviour
             pieceSR.sprite = GameDrive.BlackSpriteList[(int)pieceInfo.type - 1];
         }
     }
-    
+
 
     public static int getPieceValue(char pieceChar)
     {
-        int piece = (int) ChessPiece.Type.Null +  
-                    (int) ChessPiece.Color.Null;
+        int pieceValue = (int) ChessPiece.Type.Null +  
+                         (int) ChessPiece.Color.Null;
 
-        switch (pieceChar)
+        char pieceCharLower = char.ToLower(pieceChar);
+
+        for (int typeIndex = 0; typeIndex < pieceChars.Length; typeIndex++)
         {
-            case 'p':
-                piece = (int) ChessPiece.Type.Pawn +
-                        (int) ChessPiece.Color.Black;
-                break;
-            case 'n':
-                piece = (int) ChessPiece.Type.Knight +  
-                        (int) ChessPiece.Color.Black;
-                break;
-            case 'b':
-                piece = (int) ChessPiece.Type.Bishop +
-                        (int) ChessPiece.Color.Black;
-                break;
-            case 'r':
-                piece = (int) ChessPiece.Type.Rook +
-                        (int) ChessPiece.Color.Black;
-                break;
-            case 'q':
-                piece = (int) ChessPiece.Type.Queen +
-                        (int) ChessPiece.Color.Black;
-                break;
-            case 'k':
-                piece = (int) ChessPiece.Type.King + 
-                        (int) ChessPiece.Color.Black;
-                break;
+            if (pieceCharLower == pieceChars[typeIndex])
+            {
+                pieceValue = 1 + typeIndex;
 
-            case 'P':
-                piece = (int) ChessPiece.Type.Pawn +
-                        (int) ChessPiece.Color.White;
+                if (char.IsUpper(pieceChar))
+                {
+                    pieceValue += (int) ChessPiece.Color.White;
+                }
+                else
+                {
+                    pieceValue += (int) ChessPiece.Color.Black;
+                }
+
                 break;
-            case 'N':
-                piece = (int) ChessPiece.Type.Knight +  
-                        (int) ChessPiece.Color.White;
-                break;
-            case 'B':
-                piece = (int) ChessPiece.Type.Bishop +
-                        (int) ChessPiece.Color.White;
-                break;
-            case 'R':
-                piece = (int) ChessPiece.Type.Rook +
-                        (int) ChessPiece.Color.White;
-                break;
-            case 'Q':
-                piece = (int) ChessPiece.Type.Queen +
-                        (int) ChessPiece.Color.White;
-                break;
-            case 'K':
-                piece = (int) ChessPiece.Type.King + 
-                        (int) ChessPiece.Color.White;
-                break;
-            
-            default:
-                piece = -1;
-                break;
+            }
         }
 
-        return piece;
+        return pieceValue;
+    }
 
+
+    //-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-
+
+    private bool isSelected = false;
+
+    void Start()
+    {
+        mainGameDriver = GameObject.FindGameObjectWithTag("Game Control").
+                         GetComponent<MainGameDriver>();
+
+        pieceSprite = this.GetComponent<SpriteRenderer>();
+
+        if (mainGameDriver == null)
+        {
+            Debug.LogError("Main Game Driver couldn't be found. Check for" + 
+                           "updated tage");
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (isSelected)
+        {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(
+                                        Input.mousePosition);
+            mousePosition.z = 0;
+            this.transform.position = mousePosition;
+        }
+    }
+
+    void OnMouseDown()
+    {
+        if (!mainGameDriver.aPieceIsSelected)
+        {
+            print((type, color));
+
+            pieceSprite.sortingOrder = mainGameDriver.selectedSpriteLayer;
+
+            isSelected = true;
+            mainGameDriver.aPieceIsSelected = true;
+        }
+
+        else if (mainGameDriver.aPieceIsSelected && isSelected)
+        {
+            print("Setting the piece down.");
+
+            pieceSprite.sortingOrder = mainGameDriver.normalSpriteLayer;
+
+            isSelected = false;
+            mainGameDriver.aPieceIsSelected = false;
+
+            int gridX =  getIndexOfCloseValue(this.transform.position.x, 
+                                          mainGameDriver.piecePositions);
+            int gridY =  getIndexOfCloseValue(this.transform.position.y, 
+                                          mainGameDriver.piecePositions);
+
+            snapPieceToGrid(gridX, gridY);
+        }
+    }
+
+    public void snapPieceToGrid(int posXIndex, int posYIndex)
+    {
+        Vector3 currentPosition = this.transform.position;
+
+        currentPosition.x = mainGameDriver.piecePositions[posXIndex];
+        currentPosition.y = mainGameDriver.piecePositions[posYIndex];
+
+        this.transform.position = currentPosition;
+    }
+
+    public int getIndexOfCloseValue(float pos, List<int> posArray)
+    {
+        int closeIndex = 0;
+
+        for (int i = 1; i < posArray.Count; i++)
+        {   
+            if (Mathf.Abs(pos - posArray[i]) < Mathf.Abs(pos - posArray[closeIndex]))
+            {
+                closeIndex = i;
+            }
+        }
+
+        return closeIndex;
     }
 }

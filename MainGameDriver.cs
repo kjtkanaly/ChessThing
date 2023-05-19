@@ -10,7 +10,10 @@ public class MainGameDriver : MonoBehaviour
     public GameObject chessPiecePreFab;
     public List<GameObject> chessPieces;
     public Sprite[] WhiteSpriteList, BlackSpriteList;
-    public int[] piecePositions;
+    public List<int> piecePositions;
+    public bool aPieceIsSelected = false;
+    public int normalSpriteLayer = 50;
+    public int selectedSpriteLayer = 60;
     const string startingFENString = 
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     const int maxNumberOfPieces = 32;
@@ -47,12 +50,14 @@ public class MainGameDriver : MonoBehaviour
 
     public void calcBoardPositions(int center, int spacing)
     {
-        piecePositions = new int[8];
+        piecePositions = new List<int>();
 
         for (int i = -4; i < 4; i++)
         {
-            piecePositions[i + 4] = center + (i * spacing);
+            piecePositions.Add(center + (i * spacing));
         }
+
+        piecePositions.Reverse();
     }
 
     public void initChessGameObjects()
