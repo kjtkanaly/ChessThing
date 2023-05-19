@@ -165,6 +165,38 @@ public class ChessPiece : MonoBehaviour
 
             isSelected = false;
             mainGameDriver.aPieceIsSelected = false;
+
+            int gridX =  getIndexOfCloseValue(this.transform.position.x, 
+                                          mainGameDriver.piecePositions);
+            int gridY =  getIndexOfCloseValue(this.transform.position.y, 
+                                          mainGameDriver.piecePositions);
+
+            snapPieceToGrid(gridX, gridY);
         }
+    }
+
+    public void snapPieceToGrid(int posXIndex, int posYIndex)
+    {
+        Vector3 currentPosition = this.transform.position;
+
+        currentPosition.x = mainGameDriver.piecePositions[posXIndex];
+        currentPosition.y = mainGameDriver.piecePositions[posYIndex];
+
+        this.transform.position = currentPosition;
+    }
+
+    public int getIndexOfCloseValue(float pos, List<int> posArray)
+    {
+        int closeIndex = 0;
+
+        for (int i = 1; i < posArray.Count; i++)
+        {   
+            if (Mathf.Abs(pos - posArray[i]) < Mathf.Abs(pos - posArray[closeIndex]))
+            {
+                closeIndex = i;
+            }
+        }
+
+        return closeIndex;
     }
 }
