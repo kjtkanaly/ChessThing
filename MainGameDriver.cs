@@ -165,19 +165,24 @@ public class MainGameDriver : MonoBehaviour
 
     public void debugMiniBoard()
     {
-        print("-------------------------");
+        string boardString = "-------------------------\n";
+
         for (int row = 0; row < miniGameBoard.GetLength(0); row++)
         {
-            string rowValues = "";
-
             for (int col = 0; col < miniGameBoard.GetLength(1); col++)
-            {
-                rowValues += miniGameBoard[col, row].ToString() + ", ";
+            {   
+                if (miniGameBoard[col, row] == 0)
+                {
+                    boardString += "  ";
+                }
+                boardString += miniGameBoard[col, row].ToString() + ", ";
             }
 
-            print(rowValues);
+            boardString += "\n";
         }
-        print("-------------------------");
+        boardString += "-------------------------";
+
+        print(boardString);
     }
 
 

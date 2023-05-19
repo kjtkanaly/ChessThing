@@ -25,7 +25,7 @@ This project will be an outlet for me to return and finish an old project, writn
 - [ ] Implement game rules
   - [x] Make a mini version of the board that is just index based
     - [ ] Fix the gird being horizontally flipped
-    - [ ] Make the mini board debug more fancy?
+    - [x] Make the mini board debug more fancy?
   - [ ] Destroy piece when a piece is placed on it
   - [ ] Determine the possible moves for a piece
   - [ ] Display those moves
