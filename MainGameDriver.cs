@@ -8,7 +8,7 @@ public class MainGameDriver : MonoBehaviour
     public ChessBoard chessBoard;
     public RawImage boardImage;
     public GameObject chessPiecePreFab;
-    public List<GameObject> chessPieces;
+    public List<ChessPiece> chessPieces;
     public Sprite[] WhiteSpriteList, BlackSpriteList;
     public List<int> piecePositions;
     public int[,] miniGameBoard;
@@ -32,7 +32,7 @@ public class MainGameDriver : MonoBehaviour
 
         populateBoard(startingBoard);
 
-        debugMiniBoard(miniGameBoard);
+        debugMiniBoard();
     }
 
     public void initChessBoard()
@@ -73,7 +73,7 @@ public class MainGameDriver : MonoBehaviour
 
             newPiece.SetActive(false);
 
-            chessPieces.Add(newPiece);
+            chessPieces.Add(newPiece.GetComponent<ChessPiece>());
         }
     }
 
@@ -87,8 +87,8 @@ public class MainGameDriver : MonoBehaviour
         {
             if (startingBoard[i] > 0)
             {   
-                GameObject chessPiece = chessPieces[pieceBankIndex];
-                ChessPiece pieceInfo = chessPiece.GetComponent<ChessPiece>();
+                ChessPiece pieceInfo = chessPieces[pieceBankIndex];
+                GameObject chessPiece = pieceInfo.gameObject;
 
                 ChessPiece.Type pieceType = ChessPiece.getPieceTypeFromInt(
                     startingBoard[i]);
@@ -151,6 +151,7 @@ public class MainGameDriver : MonoBehaviour
         return boardVector;
     }
 
+
     private bool isNextFenCharAPiece(char fenChar)
     {
         if (char.IsNumber(fenChar) || (fenChar == '/'))
@@ -161,8 +162,10 @@ public class MainGameDriver : MonoBehaviour
         return true;
     }
 
-    private void debugMiniBoard(int[,] miniGameBoard)
+
+    public void debugMiniBoard()
     {
+        print("-------------------------");
         for (int row = 0; row < miniGameBoard.GetLength(0); row++)
         {
             string rowValues = "";
@@ -174,5 +177,25 @@ public class MainGameDriver : MonoBehaviour
 
             print(rowValues);
         }
+        print("-------------------------");
     }
+
+
+    public void deactivateThePieceAtPos(int col, int row)
+    {
+        for (int i = 0; i < chessPieces.Count; i++)
+        {
+            if ((chessPieces[i].pos.x == col) && (chessPieces[i].pos.y == row))
+            {
+                chessPieces[i].gameObject.SetActive(false);
+                chessPieces[i].pos = new Vector2Int(-1, -1);
+            }
+        }
+    }
+
+
+    public void updateMiniBoard(int col, int row, int pieceValue)
+    {
+        miniGameBoard[col, row] = pieceValue;
+    }  
 }

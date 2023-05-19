@@ -147,6 +147,7 @@ public class ChessPiece : MonoBehaviour
 
     void OnMouseDown()
     {
+        // Picking a piece up
         if (!mainGameDriver.aPieceIsSelected)
         {
             print((type, color));
@@ -155,23 +156,38 @@ public class ChessPiece : MonoBehaviour
 
             isSelected = true;
             mainGameDriver.aPieceIsSelected = true;
+
+            // Update the mini board
+            mainGameDriver.updateMiniBoard(pos.x, pos.y, 0);
         }
 
+        // Setting a piece down
         else if (mainGameDriver.aPieceIsSelected && isSelected)
         {
-            print("Setting the piece down.");
-
             pieceSprite.sortingOrder = mainGameDriver.normalSpriteLayer;
 
             isSelected = false;
             mainGameDriver.aPieceIsSelected = false;
 
+            // Handle the placement of the piece
             int gridX =  getIndexOfCloseValue(this.transform.position.x, 
                                           mainGameDriver.piecePositions);
             int gridY =  getIndexOfCloseValue(this.transform.position.y, 
                                           mainGameDriver.piecePositions);
 
+            // Destroy any piece on the new spot
+            removeImpedingPiece(gridX, gridY);
+
+            // Update the mini board
+            mainGameDriver.updateMiniBoard(gridX, gridY, value);
+
+            // Update this piece's pos
+            pos = new Vector2Int(gridX, gridY);
+
             snapPieceToGrid(gridX, gridY);
+
+            // Debug - display updated mini board
+            mainGameDriver.debugMiniBoard();
         }
     }
 
@@ -199,4 +215,14 @@ public class ChessPiece : MonoBehaviour
 
         return closeIndex;
     }
+
+    public void removeImpedingPiece(int col, int row)
+    {
+        if (mainGameDriver.miniGameBoard[col, row] > 0)
+        {
+            mainGameDriver.deactivateThePieceAtPos(col, row);
+        }
+    }
+
+    
 }
