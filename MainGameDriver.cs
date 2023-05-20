@@ -48,11 +48,13 @@ public class MainGameDriver : MonoBehaviour
                               GetComponent<RawImage>();
         BoardImage.texture = texture;
 
-        texture = ChessBoard.drawChessBoard(texture, 
-                                            chessBoard.LightSpaceColor, 
-                                            chessBoard.DarkSpaceColor);
+        //texture = ChessBoard.drawChessBoard(texture, 
+        //                                    chessBoard.LightSpaceColor, 
+        //                                    chessBoard.DarkSpaceColor);
 
         chessBoard.defineBoardSpots(texture);
+        
+        chessBoard.paintTheBoardSpaces(texture);
         
         texture.Apply();
     }

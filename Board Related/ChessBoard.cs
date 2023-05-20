@@ -15,19 +15,27 @@ public class ChessBoard : MonoBehaviour
 
     public List<boardSpot> boardSpots = new List<boardSpot>();
 
+    public enum SpaceColor
+    {
+        white = 0,
+        black = 1
+    }
+
     // Board spot struct
     public struct boardSpot
     {
         public Vector2Int bottomLeftCorner, topRightCorner;
         public Color normalColor, highlightColor;
+        public SpaceColor color;
 
         public boardSpot(Vector2Int bottomLeftCorner, Vector2Int topRightCorner,
-                         Color normalColor, Color highlightColor)
+                         Color normalColor, Color highlightColor, SpaceColor color)
         {
             this.bottomLeftCorner = bottomLeftCorner;
             this.topRightCorner = topRightCorner;
             this.normalColor = normalColor;
             this.highlightColor = highlightColor;
+            this.color = color;
         }
     }
 
@@ -42,70 +50,64 @@ public class ChessBoard : MonoBehaviour
         {
             for (int col = 0; col < 8; col++)
             {
-                Vector2Int bottomLeftCorner = new Vector2Int(row * rowDivValue,
-                                                             col * colDivValue);
-                Vector2Int topRightCorner = new Vector2Int((row + 1) * rowDivValue, 
-                                                           (col + 1) * colDivValue);
+                Vector2Int bottomLeftCorner = new Vector2Int(
+                                                  row * rowDivValue,
+                                                  col * colDivValue);
+                Vector2Int topRightCorner = new Vector2Int(
+                                                (row + 1) * rowDivValue - 1, 
+                                                (col + 1) * colDivValue - 1);
 
                 Color normalColor, highlightColor;
+                SpaceColor spaceColor;
 
-                int rowCheck = row / 2;
-                int colCheck = col / 2;
-                int check = rowCheck + colCheck;
+                int modCheck = row + col;
 
-                if (check % 2 == 0)
+                if (modCheck % 2 == 0)
                 {
                     normalColor = DarkSpaceColor;
                     highlightColor = highlightDarkSpaceColor;
+                    spaceColor = SpaceColor.black;
                 }
                 else
                 {
                     normalColor = LightSpaceColor;
                     highlightColor = highlightLightSpaceColor;
+                    spaceColor = SpaceColor.white;
                 }
 
                 boardSpot newBoardSpot = new boardSpot(bottomLeftCorner, 
                                                        topRightCorner,
                                                        normalColor, 
-                                                       highlightColor);
+                                                       highlightColor,
+                                                       spaceColor);
 
                 boardSpots.Add(newBoardSpot);
 
                 // Debug
                 print((row, col, bottomLeftCorner, 
-                       topRightCorner, normalColor, highlightColor));
+                       topRightCorner, normalColor, highlightColor,
+                       spaceColor));
             }
         }
 
         print(boardSpots.Count);
     }
 
-    public static Texture2D drawChessBoard(Texture2D texture, 
-                                           Color lightColor, 
-                                           Color darkColor)
-    {   
-        int rowDivValue = texture.width / 8;
-        int colDivValue = texture.height / 8;
-
-        for (int row = 0; row < texture.width; row++)
+    public void paintTheBoardSpaces(Texture2D texture)
+    {
+        for (int spaceIndex = 0; spaceIndex < boardSpots.Count; spaceIndex++)
         {
-            for (int col = 0; col < texture.height; col++)
-            {
-                int rowCheck = row / rowDivValue;
-                int colCheck = col / colDivValue;
-                int check = rowCheck + colCheck;
+            Vector2Int bottomLeft = boardSpots[spaceIndex].bottomLeftCorner;
+            Vector2Int topRight = boardSpots[spaceIndex].topRightCorner;
+            Color textureColor = boardSpots[spaceIndex].normalColor;
 
-                if (check % 2 == 0)
+            for (int row = bottomLeft.y; row <= topRight.y; row++)
+            {
+                for (int col = bottomLeft.x; col <= topRight.x; col++)
                 {
-                    texture.SetPixel(row, col, darkColor);
-                }
-                else
-                {
-                    texture.SetPixel(row, col, lightColor);
+                    texture.SetPixel(row, col, textureColor);
                 }
             }
         }
-
-        return texture;
     }
 }

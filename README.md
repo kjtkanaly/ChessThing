@@ -27,6 +27,7 @@ This project will be an outlet for me to return and finish an old project, writn
     - [x] Fix the gird being horizontally flipped
     - [x] Make the mini board debug more fancy?
   - [x] Destroy piece when a piece is placed on it
+  - [x] Redo the board painting using the new board space list
   - [ ] Determine the possible moves for a piece
   - [ ] Display those moves
   - [ ] Be able to "place" a piece on the spot
