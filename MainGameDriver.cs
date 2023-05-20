@@ -19,6 +19,7 @@ public class MainGameDriver : MonoBehaviour
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     const int maxNumberOfPieces = 32;
 
+
     void Start()
     {
         initChessBoard();
@@ -37,6 +38,7 @@ public class MainGameDriver : MonoBehaviour
         populateBoard();
     }
 
+
     public void initChessBoard()
     {
         Texture2D texture = new Texture2D(chessBoard.textureSize.x, 
@@ -49,9 +51,12 @@ public class MainGameDriver : MonoBehaviour
         texture = ChessBoard.drawChessBoard(texture, 
                                             chessBoard.LightSpaceColor, 
                                             chessBoard.DarkSpaceColor);
+
+        chessBoard.defineBoardSpots(texture);
         
         texture.Apply();
     }
+
 
     public void calcBoardPositions(int center, int spacing)
     {
@@ -64,6 +69,7 @@ public class MainGameDriver : MonoBehaviour
 
         //piecePositions.Reverse();
     }
+
 
     public void initChessGameObjects()
     {
@@ -78,6 +84,7 @@ public class MainGameDriver : MonoBehaviour
             chessPieces.Add(newPiece.GetComponent<ChessPiece>());
         }
     }
+
 
     public void populateBoard()
     { 
@@ -175,6 +182,28 @@ public class MainGameDriver : MonoBehaviour
     }
 
 
+    public void deactivateThePieceAtPos(int col, int row)
+    {
+        for (int i = 0; i < chessPieces.Count; i++)
+        {
+            if ((chessPieces[i].pos.x == col) && (chessPieces[i].pos.y == row))
+            {
+                chessPieces[i].gameObject.SetActive(false);
+                chessPieces[i].pos = new Vector2Int(-1, -1);
+            }
+        }
+    }
+
+
+    public void updateMiniBoard(int col, int row, int pieceValue)
+    {
+        miniGameBoard[col, row] = pieceValue;
+    }  
+
+    //--------------------------------------------------------------------------
+    // Debug Code
+
+    // Prints the Mini Board to the terminal
     public void debugMiniBoard()
     {
         string boardString = "-------------------------\n";
@@ -196,23 +225,4 @@ public class MainGameDriver : MonoBehaviour
 
         print(boardString);
     }
-
-
-    public void deactivateThePieceAtPos(int col, int row)
-    {
-        for (int i = 0; i < chessPieces.Count; i++)
-        {
-            if ((chessPieces[i].pos.x == col) && (chessPieces[i].pos.y == row))
-            {
-                chessPieces[i].gameObject.SetActive(false);
-                chessPieces[i].pos = new Vector2Int(-1, -1);
-            }
-        }
-    }
-
-
-    public void updateMiniBoard(int col, int row, int pieceValue)
-    {
-        miniGameBoard[col, row] = pieceValue;
-    }  
 }
