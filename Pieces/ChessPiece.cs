@@ -152,13 +152,18 @@ public class ChessPiece : MonoBehaviour
         {
             print((type, color));
 
+            // Bring the pieces sprite level up
             pieceSprite.sortingOrder = mainGameDriver.selectedSpriteLayer;
 
+            // Update control booleans
             isSelected = true;
             mainGameDriver.aPieceIsSelected = true;
 
             // Update the mini board
             mainGameDriver.updateMiniBoard(pos.x, pos.y, 0);
+
+            // Find the possible moves for the piece
+            gatherPossibleMoves();
         }
 
         // Setting a piece down
@@ -224,5 +229,68 @@ public class ChessPiece : MonoBehaviour
         }
     }
 
-    
+    public void gatherPossibleMoves()
+    {   
+        List<Vector2Int> possibleMoves = new List<Vector2Int>();
+
+        if (type == ChessPiece.Type.Pawn)
+        {
+            print("Can move like a pawn!");
+        }
+
+        else if (type == ChessPiece.Type.Knight)
+        {
+            print("Can move like a knight!");
+        }
+
+        else if (type == ChessPiece.Type.King)
+        {
+            print("Can move like a king!");
+        }
+
+        else
+        {
+            if (canMoveAtAngle())
+            {
+                print("Can move at an angle!");
+            }
+
+            if (canMoveCartesianly())
+            {
+                print("Can move Cartesianly!");
+            }
+        }
+    }
+
+    public bool canMoveAtAngle()
+    {
+        ChessPiece.Type[] possibleTypes = {ChessPiece.Type.Bishop, 
+                                           ChessPiece.Type.Queen};
+
+        for (int i = 0; i < possibleTypes.Length; i++)
+        {
+            if (type == possibleTypes[i])
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool canMoveCartesianly()
+    {
+        ChessPiece.Type[] possibleTypes = {ChessPiece.Type.Rook, 
+                                           ChessPiece.Type.Queen};
+
+        for (int i = 0; i < possibleTypes.Length; i++)
+        {
+            if (type == possibleTypes[i])
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
