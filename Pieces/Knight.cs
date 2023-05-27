@@ -8,6 +8,32 @@ public static class Knight
     {
         List<Vector2Int> knightMoves = new List<Vector2Int>();
 
+        int row = knightPiece.pos.y;
+        int col = knightPiece.pos.x;
+        int[] possibleIndexOffsets = {-2, -1, 1, 2};
+
+        for (int i = 0; i < possibleIndexOffsets.Length; i++)
+        {
+            for (int j = 0; j < possibleIndexOffsets.Length; j++)
+            {
+                if (Mathf.Abs(possibleIndexOffsets[i]) != 
+                    Mathf.Abs(possibleIndexOffsets[j]))
+                {
+                    Vector2Int moveCords = new Vector2Int(
+                                                 col + possibleIndexOffsets[i], 
+                                                 row + possibleIndexOffsets[j]);
+
+                    // Check if Move is off board
+                    bool offBoardCheck = knightPiece.checkIfOffBoard(moveCords);
+
+                    if (!offBoardCheck)
+                    {
+                        knightMoves.Add(moveCords);         
+                    }
+                }
+            }
+        }
+
         return knightMoves;
     }
 }

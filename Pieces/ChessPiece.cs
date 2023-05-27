@@ -335,4 +335,19 @@ public class ChessPiece : MonoBehaviour
 
         return false;
     }
+
+    public bool checkIfOffBoard(Vector2Int cords)
+    {
+        if ((cords.x < 0) || (cords.x > 7))
+        {
+            return true;
+        }
+
+        if ((cords.y < 0) || (cords.y > 7))
+        {
+            return true; 
+        }  
+
+        return false;
+    }
 }

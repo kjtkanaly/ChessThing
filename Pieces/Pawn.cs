@@ -8,8 +8,8 @@ public static class Pawn
     {
         List<Vector2Int> pawnMoves = new List<Vector2Int>();
         int row = pawnPiece.pos.y;
-
         int rowIncrement = 1;
+        
         if (pawnPiece.color == ChessPiece.Color.Black)
         {
             rowIncrement = -1;
