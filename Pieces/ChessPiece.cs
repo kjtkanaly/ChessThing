@@ -236,6 +236,8 @@ public class ChessPiece : MonoBehaviour
         if (type == ChessPiece.Type.Pawn)
         {
             print("Can move like a pawn!");
+
+            possibleMoves.AddRange(getPossiblePawnMoves());
         }
 
         else if (type == ChessPiece.Type.Knight)
@@ -259,6 +261,12 @@ public class ChessPiece : MonoBehaviour
             {
                 print("Can move Cartesianly!");
             }
+        }
+
+        // Debug
+        for (int i = 0; i < possibleMoves.Count; i++)
+        {
+            print(possibleMoves[i]);
         }
     }
 
@@ -292,5 +300,31 @@ public class ChessPiece : MonoBehaviour
         }
 
         return false;
+    }
+
+    public List<Vector2Int> getPossiblePawnMoves()
+    {
+        List<Vector2Int> pawnMoves = new List<Vector2Int>();
+        int row = pos.y;
+
+        int rowIncrement = 1;
+        if (color == Color.Black)
+        {
+            rowIncrement = -1;
+        }
+        
+        for(int i = 0; i < 2; i++)
+        {
+            row += rowIncrement;
+
+            if ((row < 0) && (row > 7))
+            {
+                break;
+            }
+
+            pawnMoves.Add(new Vector2Int(pos.x, row));
+        }
+
+        return pawnMoves;
     }
 }
