@@ -9,6 +9,7 @@ public class ChessPiece : MonoBehaviour
     public Type type;
     public Color color;
     public Vector2Int pos;
+    public List<Vector2Int> possibleMoves;
     public int value;
     public static string pieceChars = "kpnbrq";
 
@@ -169,30 +170,48 @@ public class ChessPiece : MonoBehaviour
         // Setting a piece down
         else if (mainGameDriver.aPieceIsSelected && isSelected)
         {
-            pieceSprite.sortingOrder = mainGameDriver.normalSpriteLayer;
-
-            isSelected = false;
-            mainGameDriver.aPieceIsSelected = false;
-
             // Handle the placement of the piece
             int gridX =  getIndexOfCloseValue(this.transform.position.x, 
                                           mainGameDriver.piecePositions);
             int gridY =  getIndexOfCloseValue(this.transform.position.y, 
                                           mainGameDriver.piecePositions);
 
-            // Destroy any piece on the new spot
-            removeImpedingPiece(gridX, gridY);
+            // Check if the closes grid positions are valid moves
+            bool validMove = false;
+            for (int i = 0; i < possibleMoves.Count; i++)
+            {
+                if (possibleMoves[i].x == gridX && possibleMoves[i].y == gridY)
+                {
+                    validMove = true;
+                    break;
+                }
+            }
+            
+            if (validMove)
+            {
+                pieceSprite.sortingOrder = mainGameDriver.normalSpriteLayer;
 
-            // Update the mini board
-            mainGameDriver.updateMiniBoard(gridX, gridY, value);
+                isSelected = false;
+                mainGameDriver.aPieceIsSelected = false;
 
-            // Update this piece's pos
-            pos = new Vector2Int(gridX, gridY);
+                // Destroy any piece on the new spot
+                removeImpedingPiece(gridX, gridY);
 
-            snapPieceToGrid(gridX, gridY);
+                // Update the mini board
+                mainGameDriver.updateMiniBoard(gridX, gridY, value);
 
-            // Debug - display updated mini board
-            mainGameDriver.debugMiniBoard();
+                // Update this piece's pos
+                pos = new Vector2Int(gridX, gridY);
+
+                snapPieceToGrid(gridX, gridY);
+
+                // Debug - display updated mini board
+                mainGameDriver.debugMiniBoard();
+            }
+            else
+            {
+                print("Invalid move!");
+            }
         }
     }
 
@@ -231,7 +250,10 @@ public class ChessPiece : MonoBehaviour
 
     public void gatherPossibleMoves()
     {   
-        List<Vector2Int> possibleMoves = new List<Vector2Int>();
+        possibleMoves = new List<Vector2Int>();
+        
+        // Add the default move of placing the piece back down
+        possibleMoves.Add(new Vector2Int(pos.x, pos.y));
 
         if (type == ChessPiece.Type.Pawn)
         {
@@ -391,9 +413,7 @@ public class ChessPiece : MonoBehaviour
         if (pos.x > 0)
         {
             int enemyValue = mainGameDriver.miniGameBoard[pos.x - 1, row];
-            ChessPiece.Color enemyColor = getPieceColorFromInt(enemyValue);
-
-            if ((enemyColor != color) && (enemyValue != 0))
+            if (pieceCanBeKilled(enemyValue))
             {
                 killMoves.Add(new Vector2Int(pos.x - 1, row));
             }
@@ -403,14 +423,24 @@ public class ChessPiece : MonoBehaviour
         if (pos.x < 7)
         {
             int enemyValue = mainGameDriver.miniGameBoard[pos.x + 1, row];
-            ChessPiece.Color enemyColor = getPieceColorFromInt(enemyValue);
-
-            if ((enemyColor != color) && (enemyValue != 0))
+            if (pieceCanBeKilled(enemyValue))
             {
                 killMoves.Add(new Vector2Int(pos.x + 1, row));
             }
         }
 
         return killMoves;
+    }
+
+    public bool pieceCanBeKilled(int enemyValue)
+    {
+        ChessPiece.Color enemyColor = getPieceColorFromInt(enemyValue);
+
+        if ((enemyColor != color) && (enemyValue != 0))
+        {
+            return true;
+        }
+
+        return false;
     }
 }
