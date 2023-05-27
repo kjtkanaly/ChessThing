@@ -319,7 +319,8 @@ public class ChessPiece : MonoBehaviour
         {
             maxPawnSteps = 2;
         }
-        
+
+        // Finding forward movement options
         for(int i = 0; i < maxPawnSteps; i++)
         {
             row += rowIncrement;
@@ -331,6 +332,10 @@ public class ChessPiece : MonoBehaviour
 
             pawnMoves.Add(new Vector2Int(pos.x, row));
         }
+
+        // Finding possible kill options
+        row = pos.y;
+        pawnMoves.AddRange(getPawnKillMoves(row + rowIncrement));
 
         return pawnMoves;
     }
@@ -370,5 +375,42 @@ public class ChessPiece : MonoBehaviour
         }
 
         return check;
+    }
+
+    public List<Vector2Int> getPawnKillMoves(int row)
+    {
+        List<Vector2Int> killMoves = new List<Vector2Int>();
+
+        // Exception Check, pawn is add board's edge
+        if ((row < 0) || (row > 7))
+        {
+            return killMoves;
+        }
+
+        // Check for kill left
+        if (pos.x > 0)
+        {
+            int enemyValue = mainGameDriver.miniGameBoard[pos.x - 1, row];
+            ChessPiece.Color enemyColor = getPieceColorFromInt(enemyValue);
+
+            if ((enemyColor != color) && (enemyValue != 0))
+            {
+                killMoves.Add(new Vector2Int(pos.x - 1, row));
+            }
+        }
+
+        // Check for kill right
+        if (pos.x < 7)
+        {
+            int enemyValue = mainGameDriver.miniGameBoard[pos.x + 1, row];
+            ChessPiece.Color enemyColor = getPieceColorFromInt(enemyValue);
+
+            if ((enemyColor != color) && (enemyValue != 0))
+            {
+                killMoves.Add(new Vector2Int(pos.x + 1, row));
+            }
+        }
+
+        return killMoves;
     }
 }

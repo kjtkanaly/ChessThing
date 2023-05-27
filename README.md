@@ -33,7 +33,7 @@ This project will be an outlet for me to return and finish an old project, writn
       - [x] Find forward movement
       - [x] Check if pawn has moved
       - [x] Check if forward is blocked by another piece
-      - [ ] Check if pawn can move to kill
+      - [x] Check if pawn can move to kill
       - [ ] Force pawn to be placed on valid spot
     - [ ] Knight Logic
   - [ ] Display those moves
