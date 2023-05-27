@@ -259,7 +259,7 @@ public class ChessPiece : MonoBehaviour
         {
             print("Can move like a pawn!");
 
-            possibleMoves.AddRange(getPossiblePawnMoves());
+            possibleMoves.AddRange(Pawn.getPossiblePawnMoves(this));
         }
 
         else if (type == ChessPiece.Type.Knight)
@@ -322,114 +322,6 @@ public class ChessPiece : MonoBehaviour
         }
 
         return false;
-    }
-
-    public List<Vector2Int> getPossiblePawnMoves()
-    {
-        List<Vector2Int> pawnMoves = new List<Vector2Int>();
-        int row = pos.y;
-
-        int rowIncrement = 1;
-        if (color == Color.Black)
-        {
-            rowIncrement = -1;
-        }
-
-        int maxPawnSteps = 1;
-
-        if (pawnHasNotMoved())
-        {
-            maxPawnSteps = 2;
-        }
-
-        // Finding forward movement options
-        for(int i = 0; i < maxPawnSteps; i++)
-        {
-            row += rowIncrement;
-
-            if ((row < 0) || (row > 7) || pawnIsBlocked(row))
-            {
-                break;
-            }
-
-            pawnMoves.Add(new Vector2Int(pos.x, row));
-        }
-
-        // Finding possible kill options
-        row = pos.y;
-        pawnMoves.AddRange(getPawnKillMoves(row + rowIncrement));
-
-        return pawnMoves;
-    }
-
-    public bool pawnHasNotMoved()
-    {
-        bool check = false;
-
-        if ((color == Color.White) && (pos.y == 1))
-        {
-            check = true;
-        }
-
-        if ((color == Color.Black) && (pos.y == 6))
-        {   
-            check = true;
-        }
-
-        return check;
-    }
-
-    public bool pawnIsBlocked(int row)
-    {
-        // Exception Check, pawn is add board's edge
-        if ((row < 0) || (row > 7))
-        {
-            return false;
-        }
-
-        bool check = false;
-
-        if(mainGameDriver.miniGameBoard[pos.x, row] != 0)
-        {
-            print(mainGameDriver.miniGameBoard[pos.x, row]);
-
-            check = true;
-        }
-
-        return check;
-    }
-
-    public List<Vector2Int> getPawnKillMoves(int row)
-    {
-        List<Vector2Int> killMoves = new List<Vector2Int>();
-
-        // Exception Check, pawn is add board's edge
-        if ((row < 0) || (row > 7))
-        {
-            return killMoves;
-        }
-
-        // Check for kill left
-        if (pos.x > 0)
-        {
-            int enemyValue = mainGameDriver.miniGameBoard[pos.x - 1, row];
-            if (pieceCanBeKilled(enemyValue))
-            {
-                killMoves.Add(new Vector2Int(pos.x - 1, row));
-            }
-        }
-
-        // Check for kill right
-        if (pos.x < 7)
-        {
-            int enemyValue = mainGameDriver.miniGameBoard[pos.x + 1, row];
-            if (pieceCanBeKilled(enemyValue))
-            {
-                killMoves.Add(new Vector2Int(pos.x + 1, row));
-            }
-        }
-
-        return killMoves;
     }
 
     public bool pieceCanBeKilled(int enemyValue)
