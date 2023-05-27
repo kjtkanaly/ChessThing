@@ -257,14 +257,14 @@ public class ChessPiece : MonoBehaviour
 
         if (type == ChessPiece.Type.Pawn)
         {
-            print("Can move like a pawn!");
-
             possibleMoves.AddRange(Pawn.getPossiblePawnMoves(this));
         }
 
         else if (type == ChessPiece.Type.Knight)
         {
             print("Can move like a knight!");
+
+            possibleMoves.AddRange(Knight.getPossibleKnightMoves(this));
         }
 
         else if (type == ChessPiece.Type.King)
