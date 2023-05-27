@@ -324,7 +324,7 @@ public class ChessPiece : MonoBehaviour
         {
             row += rowIncrement;
 
-            if ((row < 0) && (row > 7))
+            if ((row < 0) || (row > 7) || pawnIsBlocked(row))
             {
                 break;
             }
@@ -346,6 +346,26 @@ public class ChessPiece : MonoBehaviour
 
         if ((color == Color.Black) && (pos.y == 6))
         {   
+            check = true;
+        }
+
+        return check;
+    }
+
+    public bool pawnIsBlocked(int row)
+    {
+        // Exception Check, pawn is add board's edge
+        if ((row < 0) || (row > 7))
+        {
+            return false;
+        }
+
+        bool check = false;
+
+        if(mainGameDriver.miniGameBoard[pos.x, row] != 0)
+        {
+            print(mainGameDriver.miniGameBoard[pos.x, row]);
+
             check = true;
         }
 

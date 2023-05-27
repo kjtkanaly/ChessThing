@@ -29,5 +29,12 @@ This project will be an outlet for me to return and finish an old project, writn
   - [x] Destroy piece when a piece is placed on it
   - [x] Redo the board painting using the new board space list
   - [ ] Determine the possible moves for a piece
+    - [ ] Pawn logic
+      - [x] Find forward movement
+      - [x] Check if pawn has moved
+      - [x] Check if forward is blocked by another piece
+      - [ ] Check if pawn can move to kill
+      - [ ] Force pawn to be placed on valid spot
+    - [ ] Knight Logic
   - [ ] Display those moves
   - [ ] Be able to "place" a piece on the spot
