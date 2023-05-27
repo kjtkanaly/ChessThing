@@ -312,8 +312,15 @@ public class ChessPiece : MonoBehaviour
         {
             rowIncrement = -1;
         }
+
+        int maxPawnSteps = 1;
+
+        if (pawnHasNotMoved())
+        {
+            maxPawnSteps = 2;
+        }
         
-        for(int i = 0; i < 2; i++)
+        for(int i = 0; i < maxPawnSteps; i++)
         {
             row += rowIncrement;
 
@@ -326,5 +333,22 @@ public class ChessPiece : MonoBehaviour
         }
 
         return pawnMoves;
+    }
+
+    public bool pawnHasNotMoved()
+    {
+        bool check = false;
+
+        if ((color == Color.White) && (pos.y == 1))
+        {
+            check = true;
+        }
+
+        if ((color == Color.Black) && (pos.y == 6))
+        {   
+            check = true;
+        }
+
+        return check;
     }
 }
