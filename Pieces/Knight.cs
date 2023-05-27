@@ -28,7 +28,14 @@ public static class Knight
 
                     if (!offBoardCheck)
                     {
-                        knightMoves.Add(moveCords);         
+                        // Check if Move is on ally pieces
+                        bool allyPieceCheck = knightPiece.checkIfAllyPiece(
+                                                  moveCords);
+
+                        if (!allyPieceCheck)
+                        {
+                            knightMoves.Add(moveCords);
+                        }
                     }
                 }
             }

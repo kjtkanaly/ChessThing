@@ -35,6 +35,8 @@ This project will be an outlet for me to return and finish an old project, writn
       - [x] Check if forward is blocked by another piece
       - [x] Check if pawn can move to kill
       - [x] Force pawn to be placed on valid spot
-    - [ ] Knight Logic
+    - [x] Knight Logic
+      - [x] Find possible moves on board
+      - [x] Check if possible move is blocked by ally
   - [ ] Display those moves
   - [ ] Be able to "place" a piece on the spot

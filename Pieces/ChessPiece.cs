@@ -350,4 +350,23 @@ public class ChessPiece : MonoBehaviour
 
         return false;
     }
+
+    public bool checkIfAllyPiece(Vector2Int moveCords)
+    {   
+        int tgtValue = mainGameDriver.miniGameBoard[moveCords.x, moveCords.y];
+
+        if (tgtValue == 0)
+        {
+            return false;
+        }
+
+        ChessPiece.Color tgtColor = getPieceColorFromInt(tgtValue);
+
+        if (color == tgtColor)
+        {
+            return true;
+        }
+
+        return false;
+    }
 }
