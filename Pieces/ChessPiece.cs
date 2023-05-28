@@ -208,6 +208,19 @@ public class ChessPiece : MonoBehaviour
 
                 snapPieceToGrid(gridX, gridY);
 
+                // Dehighlight the possible moves
+                // Display those possible moves
+                for (int i = 1; i < possibleMoves.Count; i++)
+                {
+                    int spaceIndex = possibleMoves[i].y * 8 + 
+                                     possibleMoves[i].x;
+                    ChessBoard.BoardSpace boardSpace = 
+                        chessBoard.boardSpots[spaceIndex];
+
+                    chessBoard.dehighlightBoardSpace(mainGameDriver.boardTexture, 
+                                                     boardSpace);
+                }
+
                 // Debug - display updated mini board
                 mainGameDriver.debugMiniBoard();
             }
@@ -296,12 +309,6 @@ public class ChessPiece : MonoBehaviour
 
             chessBoard.highlightBoardSpace(mainGameDriver.boardTexture, 
                                            boardSpace);
-        }
-
-        // Debug
-        for (int i = 0; i < possibleMoves.Count; i++)
-        {
-            print(possibleMoves[i]);
         }
     }
 

@@ -128,4 +128,21 @@ public class ChessBoard : MonoBehaviour
 
         texture.Apply();
     }
+
+    public void dehighlightBoardSpace(Texture2D texture, BoardSpace boardSpace)
+    {
+        Vector2Int bottomLeft = boardSpace.bottomLeftCorner;
+        Vector2Int topRight = boardSpace.topRightCorner;
+        Color normalColor = boardSpace.normalColor;
+
+        for (int row = bottomLeft.y; row <= topRight.y; row++)
+        {
+            for (int col = bottomLeft.x; col <= topRight.x; col++)
+            {
+                texture.SetPixel(row, col, normalColor);
+            }
+        }
+
+        texture.Apply();
+    }
 }
