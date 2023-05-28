@@ -5,6 +5,7 @@ using UnityEngine;
 public class ChessPiece : MonoBehaviour
 {
     public MainGameDriver mainGameDriver;
+    public ChessBoard chessBoard;
     public SpriteRenderer pieceSprite;
     public Type type;
     public Color color;
@@ -125,6 +126,8 @@ public class ChessPiece : MonoBehaviour
     {
         mainGameDriver = GameObject.FindGameObjectWithTag("Game Control").
                          GetComponent<MainGameDriver>();
+
+        chessBoard = mainGameDriver.chessBoard;
 
         pieceSprite = this.GetComponent<SpriteRenderer>();
 
@@ -283,6 +286,16 @@ public class ChessPiece : MonoBehaviour
             {
                 print("Can move Cartesianly!");
             }
+        }
+
+        // Display those possible moves
+        for (int i = 1; i < possibleMoves.Count; i++)
+        {
+            int spaceIndex = possibleMoves[i].y * 8 + possibleMoves[i].x;
+            ChessBoard.BoardSpace boardSpace = chessBoard.boardSpots[spaceIndex];
+
+            chessBoard.highlightBoardSpace(mainGameDriver.boardTexture, 
+                                           boardSpace);
         }
 
         // Debug

@@ -7,6 +7,7 @@ public class MainGameDriver : MonoBehaviour
 {
     public ChessBoard chessBoard;
     public RawImage boardImage;
+    public Texture2D boardTexture;
     public GameObject chessPiecePreFab;
     public List<ChessPiece> chessPieces;
     public Sprite[] WhiteSpriteList, BlackSpriteList;
@@ -41,22 +42,20 @@ public class MainGameDriver : MonoBehaviour
 
     public void initChessBoard()
     {
-        Texture2D texture = new Texture2D(chessBoard.textureSize.x, 
-                                          chessBoard.textureSize.y);
+        boardTexture = new Texture2D(chessBoard.textureSize.x, 
+                                chessBoard.textureSize.y);
 
         RawImage BoardImage = GameObject.FindGameObjectWithTag("Board").
                               GetComponent<RawImage>();
-        BoardImage.texture = texture;
+        BoardImage.texture = boardTexture;
 
         //texture = ChessBoard.drawChessBoard(texture, 
         //                                    chessBoard.LightSpaceColor, 
         //                                    chessBoard.DarkSpaceColor);
 
-        chessBoard.defineBoardSpots(texture);
+        chessBoard.defineBoardSpots(boardTexture);
         
-        chessBoard.paintTheBoardSpaces(texture);
-        
-        texture.Apply();
+        chessBoard.paintTheBoardSpaces(boardTexture);
     }
 
 

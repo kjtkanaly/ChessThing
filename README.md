@@ -39,4 +39,6 @@ This project will be an outlet for me to return and finish an old project, writn
       - [x] Find possible moves on board
       - [x] Check if possible move is blocked by ally
   - [ ] Display those moves
+    - [x] Highlight possible moves
+    - [ ] Dehighlight possible moves 
   - [ ] Be able to "place" a piece on the spot

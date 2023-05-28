@@ -6,14 +6,13 @@ using UnityEngine.UI;
 public class ChessBoard : MonoBehaviour
 {
     public Vector2Int textureSize = new Vector2Int(440, 440);
-    public Texture2D texture;
 
     public Color DarkSpaceColor = new Color(118, 150, 86);
     public Color LightSpaceColor = new Color(238, 238, 210);
     public Color highlightDarkSpaceColor = new Color(1, 1, 1);
     public Color highlightLightSpaceColor = new Color(1, 1, 1);
 
-    public List<boardSpot> boardSpots = new List<boardSpot>();
+    public List<BoardSpace> boardSpots = new List<BoardSpace>();
 
     public enum SpaceColor
     {
@@ -22,13 +21,13 @@ public class ChessBoard : MonoBehaviour
     }
 
     // Board spot struct
-    public struct boardSpot
+    public struct BoardSpace
     {
         public Vector2Int bottomLeftCorner, topRightCorner;
         public Color normalColor, highlightColor;
         public SpaceColor color;
 
-        public boardSpot(Vector2Int bottomLeftCorner, Vector2Int topRightCorner,
+        public BoardSpace(Vector2Int bottomLeftCorner, Vector2Int topRightCorner,
                          Color normalColor, Color highlightColor, SpaceColor color)
         {
             this.bottomLeftCorner = bottomLeftCorner;
@@ -75,7 +74,7 @@ public class ChessBoard : MonoBehaviour
                     spaceColor = SpaceColor.white;
                 }
 
-                boardSpot newBoardSpot = new boardSpot(bottomLeftCorner, 
+                BoardSpace newBoardSpot = new BoardSpace(bottomLeftCorner, 
                                                        topRightCorner,
                                                        normalColor, 
                                                        highlightColor,
@@ -109,5 +108,24 @@ public class ChessBoard : MonoBehaviour
                 }
             }
         }
+
+        texture.Apply();
+    }
+
+    public void highlightBoardSpace(Texture2D texture, BoardSpace boardSpace)
+    {
+        Vector2Int bottomLeft = boardSpace.bottomLeftCorner;
+        Vector2Int topRight = boardSpace.topRightCorner;
+        Color highlightColor = boardSpace.highlightColor;
+
+        for (int row = bottomLeft.y; row <= topRight.y; row++)
+        {
+            for (int col = bottomLeft.x; col <= topRight.x; col++)
+            {
+                texture.SetPixel(row, col, highlightColor);
+            }
+        }
+
+        texture.Apply();
     }
 }
