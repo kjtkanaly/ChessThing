@@ -28,7 +28,7 @@ This project will be an outlet for me to return and finish an old project, writn
     - [x] Make the mini board debug more fancy?
   - [x] Destroy piece when a piece is placed on it
   - [x] Redo the board painting using the new board space list
-  - [ ] Determine the possible moves for a piece
+  - [x] Determine the possible moves for a piece
     - [x] Pawn logic
       - [x] Find forward movement
       - [x] Check if pawn has moved
@@ -44,6 +44,7 @@ This project will be an outlet for me to return and finish an old project, writn
     - [x] Cartisian Movement
       - [x] Find possible moves on board
       - [x] Check if possible move is blocked by ally
+    - [x] King Movement
   - [ ] Display those moves
     - [x] Highlight possible moves
     - [x] Dehighlight possible moves 

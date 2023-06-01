@@ -286,6 +286,8 @@ public class ChessPiece : MonoBehaviour
         else if (type == ChessPiece.Type.King)
         {
             print("Can move like a king!");
+
+            possibleMoves.AddRange(getKingMoves());
         }
 
         else
@@ -453,5 +455,31 @@ public class ChessPiece : MonoBehaviour
         }
 
         return longMoves;
+    }
+
+    public List<Vector2Int> getKingMoves()
+    {
+        List<Vector2Int> kingMoves = new List<Vector2Int>();
+
+        for (int row = pos.y - 1; row <= pos.y + 1; row++)
+        {
+            for (int col = pos.x - 1; col <= pos.x + 1; col++)
+            {
+                bool currentSpot = (row == pos.y) & (col == pos.x);
+                bool outOfBounds = (row < 8) & (col < 8) & (row > -1) & (col > -1);
+
+                if (!currentSpot & outOfBounds)
+                {
+                    print((col, row));
+
+                    if (!checkIfAllyPiece(new Vector2Int(col, row)))
+                    {
+                        kingMoves.Add(new Vector2Int(col, row));
+                    }
+                }
+            }
+        }
+
+        return kingMoves;
     }
 }
