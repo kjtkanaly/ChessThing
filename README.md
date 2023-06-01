@@ -22,7 +22,30 @@ This project will be an outlet for me to return and finish an old project, writn
   - [x] Be able to set a piece down
   - [x] Set the selected piece to be on a higher sprite level
   - [x] Set the piece down on the closet grid spot
-- [ ] Implement game rules
-  - [ ] Determine the possible moves for a piece
-  - [ ] Display those moves
-  - [ ] Be able to "place" a piece on the spot
+- [x] Implement game rules
+  - [x] Make a mini version of the board that is just index based
+    - [x] Fix the gird being horizontally flipped
+    - [x] Make the mini board debug more fancy?
+  - [x] Destroy piece when a piece is placed on it
+  - [x] Redo the board painting using the new board space list
+  - [x] Determine the possible moves for a piece
+    - [x] Pawn logic
+      - [x] Find forward movement
+      - [x] Check if pawn has moved
+      - [x] Check if forward is blocked by another piece
+      - [x] Check if pawn can move to kill
+      - [x] Force pawn to be placed on valid spot
+    - [x] Knight Logic
+      - [x] Find possible moves on board
+      - [x] Check if possible move is blocked by ally
+    - [x] Angle Movement
+      - [x] Find possible moves on board
+      - [x] Check if possible move is blocked by ally
+    - [x] Cartisian Movement
+      - [x] Find possible moves on board
+      - [x] Check if possible move is blocked by ally
+    - [x] King Movement
+  - [x] Display those moves
+    - [x] Highlight possible moves
+    - [x] Dehighlight possible moves 
+  - [x] Be able to "place" a piece on the spot
