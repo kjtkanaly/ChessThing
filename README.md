@@ -22,7 +22,7 @@ This project will be an outlet for me to return and finish an old project, writn
   - [x] Be able to set a piece down
   - [x] Set the selected piece to be on a higher sprite level
   - [x] Set the piece down on the closet grid spot
-- [ ] Implement game rules
+- [x] Implement game rules
   - [x] Make a mini version of the board that is just index based
     - [x] Fix the gird being horizontally flipped
     - [x] Make the mini board debug more fancy?
@@ -45,7 +45,7 @@ This project will be an outlet for me to return and finish an old project, writn
       - [x] Find possible moves on board
       - [x] Check if possible move is blocked by ally
     - [x] King Movement
-  - [ ] Display those moves
+  - [x] Display those moves
     - [x] Highlight possible moves
     - [x] Dehighlight possible moves 
-  - [ ] Be able to "place" a piece on the spot
+  - [x] Be able to "place" a piece on the spot
