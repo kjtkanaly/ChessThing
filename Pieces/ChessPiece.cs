@@ -293,6 +293,8 @@ public class ChessPiece : MonoBehaviour
             if (canMoveAtAngle())
             {
                 print("Can move at an angle!");
+
+                possibleMoves.AddRange(getAngledMoves());
             }
 
             if (canMoveCartesianly())
@@ -388,5 +390,50 @@ public class ChessPiece : MonoBehaviour
         }
 
         return false;
+    }
+
+    public List<Vector2Int> getAngledMoves()
+    {
+        List<Vector2Int> angledMoves = new List<Vector2Int>();
+
+        for (int rowIncrement = -1; rowIncrement <= 1; rowIncrement += 2)
+        {
+            for (int colIncrement = -1; colIncrement <= 1; colIncrement += 2)
+            {
+                Vector2Int slope = new Vector2Int(colIncrement, rowIncrement);
+
+                angledMoves.AddRange(getLongMoves(slope));
+            }
+        }
+
+        return angledMoves;
+    }
+
+    public List<Vector2Int> getLongMoves(Vector2Int slope)
+    {
+        List<Vector2Int> longMoves = new List<Vector2Int>();
+
+        int row = pos.y + slope.y;
+        int col = pos.x + slope.x;
+
+        while ((row < 8) & (col < 8) & (row > -1) & (col > -1))
+        {
+            if (mainGameDriver.miniGameBoard[col, row] > 0)
+            {
+                if (!checkIfAllyPiece(new Vector2Int(col, row)))
+                {
+                    longMoves.Add(new Vector2Int(col, row));
+                }
+
+                break;
+            }
+
+            longMoves.Add(new Vector2Int(col, row));
+
+            row += slope.y;
+            col += slope.x;
+        }
+
+        return longMoves;
     }
 }
