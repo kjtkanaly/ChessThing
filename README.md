@@ -41,9 +41,9 @@ This project will be an outlet for me to return and finish an old project, writn
     - [x] Angle Movement
       - [x] Find possible moves on board
       - [x] Check if possible move is blocked by ally
-    - [ ] Cartisian Movement
-      - [ ] Find possible moves on board
-      - [ ] Check if possible move is blocked by ally
+    - [x] Cartisian Movement
+      - [x] Find possible moves on board
+      - [x] Check if possible move is blocked by ally
   - [ ] Display those moves
     - [x] Highlight possible moves
     - [x] Dehighlight possible moves 

@@ -300,6 +300,8 @@ public class ChessPiece : MonoBehaviour
             if (canMoveCartesianly())
             {
                 print("Can move Cartesianly!");
+
+                possibleMoves.AddRange(getCartesianMoves());
             }
         }
 
@@ -407,6 +409,22 @@ public class ChessPiece : MonoBehaviour
         }
 
         return angledMoves;
+    }
+
+    public List<Vector2Int> getCartesianMoves()
+    {
+        List<Vector2Int> cartesianMoves = new List<Vector2Int>();
+
+        for (int increment = -1; increment <= 1; increment += 2)
+        {
+            Vector2Int slope = new Vector2Int(0, increment);
+            cartesianMoves.AddRange(getLongMoves(slope));
+
+            slope = new Vector2Int(increment, 0);
+            cartesianMoves.AddRange(getLongMoves(slope));
+        }
+
+        return cartesianMoves;
     }
 
     public List<Vector2Int> getLongMoves(Vector2Int slope)
