@@ -10,8 +10,10 @@ public class ChessPiece : MonoBehaviour
     public Type type;
     public Color color;
     public Vector2Int pos;
+    public Vector2Int enPassingPos;
     public List<Vector2Int> possibleMoves;
     public int value;
+    public bool enPassing;
     public static string pieceChars = "kpnbrq";
 
     public void InitChessPiece(Type typeValue, 
@@ -131,6 +133,8 @@ public class ChessPiece : MonoBehaviour
 
         pieceSprite = this.GetComponent<SpriteRenderer>();
 
+        enPassing = false;
+
         if (mainGameDriver == null)
         {
             Debug.LogError("Main Game Driver couldn't be found. Check for" + 
@@ -200,8 +204,19 @@ public class ChessPiece : MonoBehaviour
                 // Destroy any piece on the new spot
                 removeImpedingPiece(gridX, gridY);
 
+                // Destory any enPassing Pieces
+                removeEnpassingPiece();
+
                 // Update the mini board
                 mainGameDriver.updateMiniBoard(gridX, gridY, value);
+
+                // Log the move
+                MainGameDriver.GameMoves gameMove; 
+                gameMove = new MainGameDriver.GameMoves(this, 
+                                                        pos, 
+                                                        new Vector2Int(gridX, gridY)
+                                                        );
+                mainGameDriver.gameMoves.Add(gameMove);
 
                 // Update this piece's pos
                 pos = new Vector2Int(gridX, gridY);
@@ -220,9 +235,6 @@ public class ChessPiece : MonoBehaviour
                     chessBoard.dehighlightBoardSpace(mainGameDriver.boardTexture, 
                                                      boardSpace);
                 }
-
-                // Debug - display updated mini board
-                mainGameDriver.debugMiniBoard();
             }
             else
             {
@@ -261,6 +273,18 @@ public class ChessPiece : MonoBehaviour
         if (mainGameDriver.miniGameBoard[col, row] > 0)
         {
             mainGameDriver.deactivateThePieceAtPos(col, row);
+        }
+    }
+
+    public void removeEnpassingPiece()
+    {
+        if (enPassing)
+        {
+            mainGameDriver.deactivateThePieceAtPos(enPassingPos.x, 
+                                                   enPassingPos.y);
+
+            enPassing = false;
+            enPassingPos = new Vector2Int(-1, -1);
         }
     }
 

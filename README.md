@@ -49,3 +49,7 @@ This project will be an outlet for me to return and finish an old project, writn
     - [x] Highlight possible moves
     - [x] Dehighlight possible moves 
   - [x] Be able to "place" a piece on the spot
+- [ ] Modern game logic
+  - [x] En Passant
+  - [ ] Castling
+    

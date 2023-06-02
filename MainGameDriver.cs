@@ -10,6 +10,7 @@ public class MainGameDriver : MonoBehaviour
     public Texture2D boardTexture;
     public GameObject chessPiecePreFab;
     public List<ChessPiece> chessPieces;
+    public List<GameMoves> gameMoves;
     public Sprite[] WhiteSpriteList, BlackSpriteList;
     public List<int> piecePositions;
     public int[,] miniGameBoard;
@@ -20,6 +21,22 @@ public class MainGameDriver : MonoBehaviour
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     const int maxNumberOfPieces = 32;
 
+    public struct GameMoves
+    {
+        public ChessPiece piece;
+        public Vector2Int previousPos;
+        public Vector2Int newPos;
+
+        public GameMoves(ChessPiece piece, 
+                         Vector2Int previousPos, 
+                         Vector2Int newPos
+                         )
+        {
+            this.piece = piece;
+            this.previousPos = previousPos;
+            this.newPos = newPos;
+        }
+    }
 
     void Start()
     {
@@ -37,6 +54,9 @@ public class MainGameDriver : MonoBehaviour
         debugMiniBoard();
 
         populateBoard();
+
+        // Init the game moves list
+        gameMoves = new List<GameMoves>();
     }
 
 

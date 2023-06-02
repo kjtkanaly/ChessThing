@@ -45,6 +45,24 @@ public static class Pawn
                                             miniGameBoard, 
                                             row + rowIncrement));
 
+        // Check for enPassing
+        if (enPassCheck(pawnPiece))
+        {
+            List<MainGameDriver.GameMoves> previousMoves = 
+                pawnPiece.mainGameDriver.gameMoves;
+            MainGameDriver.GameMoves lastMove = 
+                previousMoves[previousMoves.Count - 1];
+
+            pawnMoves.Add(new Vector2Int(lastMove.newPos.x, 
+                                         lastMove.newPos.y + rowIncrement
+                                         ));
+
+            pawnPiece.enPassing = true;
+            pawnPiece.enPassingPos = new Vector2Int(lastMove.newPos.x, 
+                                                    lastMove.newPos.y
+                                                    );
+        }
+
         return pawnMoves;
     }
 
@@ -118,5 +136,34 @@ public static class Pawn
         }
 
         return killMoves;
+    }
+
+    public static bool enPassCheck(ChessPiece pawnPiece)
+    {
+        MainGameDriver mainGameDriver = pawnPiece.mainGameDriver;
+        List<MainGameDriver.GameMoves> previousMoves = mainGameDriver.gameMoves;
+
+        if (previousMoves.Count == 0)
+        {
+            return false;
+        }
+
+        MainGameDriver.GameMoves lastMove = previousMoves[previousMoves.Count - 1];
+
+        if (lastMove.piece.type == ChessPiece.Type.Pawn)
+        {
+            int enemyMovementDelta = Mathf.Abs(lastMove.newPos.y - 
+                                          lastMove.previousPos.y
+                                          );
+            int colDelta = Mathf.Abs(pawnPiece.pos.x - lastMove.newPos.x);
+            int rowDelta = Mathf.Abs(pawnPiece.pos.y - lastMove.newPos.y);
+
+            if ((enemyMovementDelta == 2) && (colDelta == 1) && (rowDelta == 0))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
