@@ -145,7 +145,10 @@ public void removeEnpassingPiece()
     if (enPassing)
     {
         mainGameDriver.deactivateThePieceAtPos(enPassingPos.x, 
-                                                enPassingPos.y);
+                                               enPassingPos.y);
+
+        // Update the mini board
+        mainGameDriver.updateMiniBoard(enPassingPos.x, enPassingPos.y, 0);
 
         enPassing = false;
         enPassingPos = new Vector2Int(-1, -1);
