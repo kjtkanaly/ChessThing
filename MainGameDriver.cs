@@ -5,245 +5,247 @@ using UnityEngine.UI;
 
 public class MainGameDriver : MonoBehaviour
 {
-    public ChessBoard chessBoard;
-    public RawImage boardImage;
-    public Texture2D boardTexture;
-    public GameObject chessPiecePreFab;
-    public List<ChessPiece> chessPieces;
-    public List<GameMoves> gameMoves;
-    public Sprite[] WhiteSpriteList, BlackSpriteList;
-    public List<int> piecePositions;
-    public int[,] miniGameBoard;
-    public bool aPieceIsSelected = false;
-    public int normalSpriteLayer = 50;
-    public int selectedSpriteLayer = 60;
-    const string startingFENString = 
-        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-    const int maxNumberOfPieces = 32;
+public ChessBoard chessBoard;
+public GameObject chessPiecePreFab;
+public List<ChessPiece> chessPieces;
+public List<GameMoves> gameMoves;
+public Sprite[] WhiteSpriteList, BlackSpriteList;
+public List<int> piecePositions;
+public int[,] miniGameBoard;
+public bool aPieceIsSelected = false;
+public int normalSpriteLayer = 50;
+public int selectedSpriteLayer = 60;
+const string startingFENString = 
+    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+const int maxNumberOfPieces = 32;
 
-    public struct GameMoves
+public struct GameMoves
+{
+    public ChessPiece piece;
+    public Vector2Int previousPos;
+    public Vector2Int newPos;
+
+    public GameMoves(ChessPiece piece, 
+                        Vector2Int previousPos, 
+                        Vector2Int newPos
+                        )
     {
-        public ChessPiece piece;
-        public Vector2Int previousPos;
-        public Vector2Int newPos;
+        this.piece = piece;
+        this.previousPos = previousPos;
+        this.newPos = newPos;
+    }
+}
 
-        public GameMoves(ChessPiece piece, 
-                         Vector2Int previousPos, 
-                         Vector2Int newPos
-                         )
-        {
-            this.piece = piece;
-            this.previousPos = previousPos;
-            this.newPos = newPos;
-        }
+void Start()
+{
+    chessBoard.initChessBoard();
+
+    calcBoardPositions(chessBoard.textureSize.x / 16, 
+                        chessBoard.textureSize.x / 8);
+
+    initChessGameObjects();
+
+    miniGameBoard = new int[8, 8];
+
+    DecodeFENString(startingFENString);
+
+    debugMiniBoard();
+
+    populateBoard();
+
+    // Init the game moves list
+    gameMoves = new List<GameMoves>();
+}
+
+
+public void calcBoardPositions(int center, int spacing)
+{
+    piecePositions = new List<int>();
+
+    for (int i = -4; i < 4; i++)
+    {
+        piecePositions.Add(center + (i * spacing));
     }
 
-    void Start()
+    //piecePositions.Reverse();
+}
+
+
+public void initChessGameObjects()
+{
+    for (int i = 0; i < maxNumberOfPieces; i++)
     {
-        initChessBoard();
+        GameObject newPiece = Instantiate(chessPiecePreFab, 
+                                            new Vector3Int(0, 0, 0), 
+                                            Quaternion.identity);
 
-        calcBoardPositions(chessBoard.textureSize.x / 16, 
-                           chessBoard.textureSize.x / 8);
+        newPiece.SetActive(false);
 
-        initChessGameObjects();
-
-        miniGameBoard = new int[8, 8];
-
-        DecodeFENString(startingFENString);
-
-        debugMiniBoard();
-
-        populateBoard();
-
-        // Init the game moves list
-        gameMoves = new List<GameMoves>();
+        chessPieces.Add(newPiece.GetComponent<ChessPiece>());
     }
+}
 
 
-    public void initChessBoard()
+public void populateBoard()
+{ 
+    int pieceBankIndex = 0;
+
+    for (int row = miniGameBoard.GetLength(0) - 1; row >= 0; row--)
     {
-        boardTexture = new Texture2D(chessBoard.textureSize.x, 
-                                chessBoard.textureSize.y);
-
-        RawImage BoardImage = GameObject.FindGameObjectWithTag("Board").
-                              GetComponent<RawImage>();
-        BoardImage.texture = boardTexture;
-
-        //texture = ChessBoard.drawChessBoard(texture, 
-        //                                    chessBoard.LightSpaceColor, 
-        //                                    chessBoard.DarkSpaceColor);
-
-        chessBoard.defineBoardSpots(boardTexture);
-        
-        chessBoard.paintTheBoardSpaces(boardTexture);
-    }
-
-
-    public void calcBoardPositions(int center, int spacing)
-    {
-        piecePositions = new List<int>();
-
-        for (int i = -4; i < 4; i++)
-        {
-            piecePositions.Add(center + (i * spacing));
-        }
-
-        //piecePositions.Reverse();
-    }
-
-
-    public void initChessGameObjects()
-    {
-        for (int i = 0; i < maxNumberOfPieces; i++)
-        {
-            GameObject newPiece = Instantiate(chessPiecePreFab, 
-                                              new Vector3Int(0, 0, 0), 
-                                              Quaternion.identity);
-
-            newPiece.SetActive(false);
-
-            chessPieces.Add(newPiece.GetComponent<ChessPiece>());
-        }
-    }
-
-
-    public void populateBoard()
-    { 
-        int pieceBankIndex = 0;
-
-        for (int row = miniGameBoard.GetLength(0) - 1; row >= 0; row--)
-        {
-            for (int col = 0; col < miniGameBoard.GetLength(1); col++)
-                if (miniGameBoard[col, row] > 0)
-                {   
-                    ChessPiece pieceInfo = chessPieces[pieceBankIndex];
-                    GameObject chessPiece = pieceInfo.gameObject;
-
-                    ChessPiece.Type pieceType = ChessPiece.getPieceTypeFromInt(
-                        miniGameBoard[col, row]);
-                    ChessPiece.Color pieceColor = ChessPiece.getPieceColorFromInt(
-                        miniGameBoard[col, row]);
-
-                    pieceInfo.InitChessPiece(pieceType, 
-                                            pieceColor,
-                                            new Vector2Int(col, row));
-
-                    chessPiece.transform.position = new Vector3(
-                        piecePositions[pieceInfo.pos.x], 
-                        piecePositions[pieceInfo.pos.y]);
-
-                    ChessPiece.setPieceSprite(chessPiece, 
-                                            pieceInfo);
-
-                    chessPiece.SetActive(true);
-
-                    pieceBankIndex += 1;
-                }
-        }
-    }
-
-
-    public int[] DecodeFENString(string fenString)
-    {
-        int[] boardVector = new int[8 * 8];
-
-        int fenIndex = 0;
-        int boardIndex = 0;
-
-        int row = 7;
-        int col = 0;
-
-        // Replace the '/' and split at the first ' '
-        fenString = fenString.Replace("/", string.Empty);
-        fenString = fenString.Split(' ')[0];
-
-        while (fenIndex < fenString.Length)
-        {
-            // FEN Index is a piece
-            if (isNextFenCharAPiece(fenString[fenIndex]))
-            {
-                boardVector[boardIndex] = ChessPiece.getPieceValue(
-                                              fenString[fenIndex]);
-
-                boardIndex++;
-
-                miniGameBoard[col, row] = ChessPiece.getPieceValue(
-                                              fenString[fenIndex]);
-                
-                col += 1;
-            }
-            // FEN is blank space
-            else
-            {
-                boardIndex += int.Parse("" + fenString[fenIndex]);
-                col += int.Parse("" + fenString[fenIndex]);
-            }
-
-            if (col >= 8)
-            {
-                col = 0;
-                row -= 1;
-            }
-
-            fenIndex++;
-        }
-
-        return boardVector;
-    }
-
-
-    private bool isNextFenCharAPiece(char fenChar)
-    {
-        if (char.IsNumber(fenChar) || (fenChar == '/'))
-        {
-            return false;
-        }
-        
-        return true;
-    }
-
-
-    public void deactivateThePieceAtPos(int col, int row)
-    {
-        for (int i = 0; i < chessPieces.Count; i++)
-        {
-            if ((chessPieces[i].pos.x == col) && (chessPieces[i].pos.y == row))
-            {
-                chessPieces[i].gameObject.SetActive(false);
-                chessPieces[i].pos = new Vector2Int(-1, -1);
-            }
-        }
-    }
-
-
-    public void updateMiniBoard(int col, int row, int pieceValue)
-    {
-        miniGameBoard[col, row] = pieceValue;
-    }  
-
-    //--------------------------------------------------------------------------
-    // Debug Code
-
-    // Prints the Mini Board to the terminal
-    public void debugMiniBoard()
-    {
-        string boardString = "-------------------------\n";
-
-        for (int row = miniGameBoard.GetLength(0) - 1; row >= 0; row--)
-        {
-            for (int col = 0; col < miniGameBoard.GetLength(1); col++)
+        for (int col = 0; col < miniGameBoard.GetLength(1); col++)
+            if (miniGameBoard[col, row] > 0)
             {   
-                if (miniGameBoard[col, row] == 0)
-                {
-                    boardString += "  ";
-                }
-                boardString += miniGameBoard[col, row].ToString() + ", ";
+                ChessPiece pieceInfo = chessPieces[pieceBankIndex];
+                GameObject chessPiece = pieceInfo.gameObject;
+
+                ChessPiece.Type pieceType = ChessPiece.getPieceTypeFromInt(
+                    miniGameBoard[col, row]);
+                ChessPiece.Color pieceColor = ChessPiece.getPieceColorFromInt(
+                    miniGameBoard[col, row]);
+
+                pieceInfo.InitChessPiece(pieceType, 
+                                        pieceColor,
+                                        new Vector2Int(col, row));
+
+                chessPiece.transform.position = new Vector3(
+                    piecePositions[pieceInfo.pos.x], 
+                    piecePositions[pieceInfo.pos.y]);
+
+                ChessPiece.setPieceSprite(chessPiece, 
+                                        pieceInfo);
+
+                chessPiece.SetActive(true);
+
+                pieceBankIndex += 1;
             }
-
-            boardString += "\n";
-        }
-        boardString += "-------------------------";
-
-        print(boardString);
     }
+}
+
+
+public int[] DecodeFENString(string fenString)
+{
+    int[] boardVector = new int[8 * 8];
+
+    int fenIndex = 0;
+    int boardIndex = 0;
+
+    int row = 7;
+    int col = 0;
+
+    // Replace the '/' and split at the first ' '
+    fenString = fenString.Replace("/", string.Empty);
+    fenString = fenString.Split(' ')[0];
+
+    while (fenIndex < fenString.Length)
+    {
+        // FEN Index is a piece
+        if (isNextFenCharAPiece(fenString[fenIndex]))
+        {
+            boardVector[boardIndex] = ChessPiece.getPieceValue(
+                                            fenString[fenIndex]);
+
+            boardIndex++;
+
+            miniGameBoard[col, row] = ChessPiece.getPieceValue(
+                                            fenString[fenIndex]);
+            
+            col += 1;
+        }
+        // FEN is blank space
+        else
+        {
+            boardIndex += int.Parse("" + fenString[fenIndex]);
+            col += int.Parse("" + fenString[fenIndex]);
+        }
+
+        if (col >= 8)
+        {
+            col = 0;
+            row -= 1;
+        }
+
+        fenIndex++;
+    }
+
+    return boardVector;
+}
+
+
+private bool isNextFenCharAPiece(char fenChar)
+{
+    if (char.IsNumber(fenChar) || (fenChar == '/'))
+    {
+        return false;
+    }
+    
+    return true;
+}
+
+
+public void deactivateThePieceAtPos(int col, int row)
+{
+    for (int i = 0; i < chessPieces.Count; i++)
+    {
+        if ((chessPieces[i].pos.x == col) && (chessPieces[i].pos.y == row))
+        {
+            chessPieces[i].gameObject.SetActive(false);
+            chessPieces[i].pos = new Vector2Int(-1, -1);
+        }
+    }
+}
+
+
+public void updateMiniBoard(int col, int row, int pieceValue)
+{
+    miniGameBoard[col, row] = pieceValue;
+}  
+
+
+public int getPosIndexNearestPos(float pos, List<int> posArray=null)
+{
+    // Default
+    if (posArray == null)
+    {
+        posArray = piecePositions;
+    }
+
+    int closeIndex = 0;
+
+    for (int i = 1; i < posArray.Count; i++)
+    {   
+        if (Mathf.Abs(pos - posArray[i]) < Mathf.Abs(pos - posArray[closeIndex]))
+        {
+            closeIndex = i;
+        }
+    }
+
+    return closeIndex;
+}
+
+
+//--------------------------------------------------------------------------
+// Debug Code
+
+// Prints the Mini Board to the terminal
+public void debugMiniBoard()
+{
+    string boardString = "-------------------------\n";
+
+    for (int row = miniGameBoard.GetLength(0) - 1; row >= 0; row--)
+    {
+        for (int col = 0; col < miniGameBoard.GetLength(1); col++)
+        {   
+            if (miniGameBoard[col, row] == 0)
+            {
+                boardString += "  ";
+            }
+            boardString += miniGameBoard[col, row].ToString() + ", ";
+        }
+
+        boardString += "\n";
+    }
+    boardString += "-------------------------";
+
+    print(boardString);
+}
 }
