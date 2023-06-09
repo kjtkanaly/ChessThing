@@ -29,11 +29,44 @@ public class CheckingSystem : MonoBehaviour
         checkingPieces.AddRange(findCartesianChecks(king));
 
         // Check if the king is in knightly danger
+        checkingPieces.AddRange(findKnightlyChecks(king));
 
         // Check if the king is in pawn danger
 
         // Update the appropriate king check status
         updateKingCheckStatus(teamColor, checkingPieces.Count);
+    }
+
+    public List<ChessPiece> findKnightlyChecks(ChessPiece king)
+    {
+        List<Vector2Int> positions = Knight.getPossibleKnightMoves(king);
+        List<ChessPiece> piecesCommittingCheck = new List<ChessPiece>();
+
+        // Check for opposing knights
+        for (int i = 0; i < positions.Count; i++)
+        {
+            int row = positions[i].y;
+            int col = positions[i].x;
+            int posValue = mainGameDriver.miniGameBoard[col, row];
+
+            if (posValue == 0)
+            {
+                continue;
+            }
+
+            ChessPiece posPiece = mainGameDriver.getPieceAtPos(positions[i]);
+
+            if (posPiece.color != king.color
+                && posPiece.type == ChessPiece.Type.Knight)
+            {
+                print((posPiece.type, posPiece.color, 
+                       posPiece.pos.x, posPiece.pos.y));
+
+                piecesCommittingCheck.Add(posPiece);
+            }
+        }
+        
+        return piecesCommittingCheck;
     }
 
     public List<ChessPiece> findCartesianChecks(ChessPiece king)
