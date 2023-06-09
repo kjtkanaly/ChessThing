@@ -53,12 +53,12 @@ This project will be an outlet for me to return and finish an old project, writn
   - [x] En Passant
   - [x] Code overhall/clean up
   - [x] En passant take doesn't update the minibaord
-  - [ ] Check for king in check
+  - [x] Check for king in check
     - [x] Add checks for angular checks
     - [x] Add checks for cartisianal checks
     - [x] Add checks for kightly checks
     - [x] Add checks for pawnly checks
-    - [ ] Add checks for kingly checks
+    - [x] Add checks for kingly checks
   - [x] Setup up system to log a king is no longer in check
   - [ ] Castling
     

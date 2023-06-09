@@ -31,8 +31,11 @@ public class CheckingSystem : MonoBehaviour
         // Check if the king is in knightly danger
         checkingPieces.AddRange(findKnightlyChecks(king));
 
-        // Check if the king is in pawn danger
+        // Check if the king is in pawnly danger
         checkingPieces.AddRange(findPawnlyChecks(king));
+
+        // Check if the king is in kingly danger
+        checkingPieces.AddRange(findKinglyChecks(king));
 
         // Update the appropriate king check status
         updateKingCheckStatus(teamColor, checkingPieces.Count);
@@ -113,6 +116,14 @@ public class CheckingSystem : MonoBehaviour
         }
 
         ChessPiece.Type[] checkTypes = {ChessPiece.Type.Pawn};
+        return getCheckingPieces(positions, king.color, checkTypes);
+    }
+
+    public List<ChessPiece> findKinglyChecks(ChessPiece king)
+    {
+        List<Vector2Int> positions = MovementLogic.getKingMoves(king);
+        ChessPiece.Type[] checkTypes = {ChessPiece.Type.King};
+
         return getCheckingPieces(positions, king.color, checkTypes);
     }
 
