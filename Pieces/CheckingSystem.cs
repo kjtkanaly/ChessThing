@@ -37,9 +37,11 @@ public class CheckingSystem : MonoBehaviour
         updateKingCheckStatus(teamColor, checkingPieces.Count);
     }
 
-    public List<ChessPiece> findKnightlyChecks(ChessPiece king)
+    public List<ChessPiece> getCheckingPieces(
+        List<Vector2Int> positions,
+        ChessPiece.Color kingColor,
+        ChessPiece.Type[] types)
     {
-        List<Vector2Int> positions = Knight.getPossibleKnightMoves(king);
         List<ChessPiece> piecesCommittingCheck = new List<ChessPiece>();
 
         // Check for opposing knights
@@ -56,8 +58,19 @@ public class CheckingSystem : MonoBehaviour
 
             ChessPiece posPiece = mainGameDriver.getPieceAtPos(positions[i]);
 
-            if (posPiece.color != king.color
-                && posPiece.type == ChessPiece.Type.Knight)
+            bool colorCheck = posPiece.color != kingColor;
+            bool typeCheck = false;
+
+            for (int j = 0; j < types.Length; j++)
+            {
+                if (posPiece.type == types[j])
+                {
+                    typeCheck = true;
+                    break;
+                }
+            }
+
+            if (colorCheck && typeCheck)
             {
                 print((posPiece.type, posPiece.color, 
                        posPiece.pos.x, posPiece.pos.y));
@@ -69,71 +82,33 @@ public class CheckingSystem : MonoBehaviour
         return piecesCommittingCheck;
     }
 
+    public List<ChessPiece> findKnightlyChecks(ChessPiece king)
+    {
+        List<Vector2Int> positions = Knight.getPossibleKnightMoves(king);
+        ChessPiece.Type[] checkTypes = {ChessPiece.Type.Knight};
+
+        return getCheckingPieces(positions, king.color, checkTypes);
+    }
+
     public List<ChessPiece> findCartesianChecks(ChessPiece king)
     {
         List<Vector2Int> positions = MovementLogic.getCartesianMoves(king);
-        List<ChessPiece> piecesCommittingCheck = new List<ChessPiece>();
+        ChessPiece.Type[] checkTypes = {ChessPiece.Type.Queen, 
+                                        ChessPiece.Type.Rook
+                                        };
 
-        // Check for opposing queens and rooks
-        for (int i = 0; i < positions.Count; i++)
-        {
-            int row = positions[i].y;
-            int col = positions[i].x;
-            int posValue = mainGameDriver.miniGameBoard[col, row];
-
-            if (posValue == 0)
-            {
-                continue;
-            }
-
-            ChessPiece posPiece = mainGameDriver.getPieceAtPos(positions[i]);
-
-            if (posPiece.color != king.color
-                && (posPiece.type == ChessPiece.Type.Queen
-                ||  posPiece.type == ChessPiece.Type.Rook))
-            {
-                print((posPiece.type, posPiece.color, 
-                       posPiece.pos.x, posPiece.pos.y));
-
-                piecesCommittingCheck.Add(posPiece);
-            }
-        }
-
-        return piecesCommittingCheck;
+        return getCheckingPieces(positions, king.color, checkTypes);
     }
 
     // Child fx that will check if a given king is in check from the angle
     public List<ChessPiece> findAngularChecks(ChessPiece king)
     {
         List<Vector2Int> positions = MovementLogic.getAngledMoves(king);
-        List<ChessPiece> piecesCommittingCheck = new List<ChessPiece>();
+        ChessPiece.Type[] checkTypes = {ChessPiece.Type.Queen, 
+                                        ChessPiece.Type.Bishop
+                                        };
 
-        // Check for opposing queens and bishops
-        for (int i = 0; i < positions.Count; i++)
-        {
-            int row = positions[i].y;
-            int col = positions[i].x;
-
-            int posValue = mainGameDriver.miniGameBoard[col, row];
-
-            if (posValue == 0)
-            {
-                continue;
-            }
-
-            ChessPiece posPiece = mainGameDriver.getPieceAtPos(positions[i]);
-
-            if ((posPiece.color != king.color) && 
-                ((posPiece.type == ChessPiece.Type.Queen) || 
-                (posPiece.type == ChessPiece.Type.Bishop)))
-            {
-                print((posPiece.type, posPiece.color, 
-                        posPiece.pos.x, posPiece.pos.y));
-                piecesCommittingCheck.Add(posPiece);
-            }
-        }
-
-        return piecesCommittingCheck;
+        return getCheckingPieces(positions, king.color, checkTypes);
     }
 
     public void updateKingCheckStatus(
