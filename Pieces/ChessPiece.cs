@@ -245,8 +245,6 @@ void OnMouseDown()
     // Picking a piece up
     if (!mainGameDriver.aPieceIsSelected)
     {
-        print((type, color));
-
         // Bring the pieces sprite level up
         pieceSprite.sortingOrder = mainGameDriver.selectedSpriteLayer;
 

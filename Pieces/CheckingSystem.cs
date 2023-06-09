@@ -26,6 +26,7 @@ public class CheckingSystem : MonoBehaviour
         checkingPieces.AddRange(findAngularChecks(king));
 
         // Check if the king is in cartisianal danger
+        checkingPieces.AddRange(findCartesianChecks(king));
 
         // Check if the king is in knightly danger
 
@@ -35,33 +36,67 @@ public class CheckingSystem : MonoBehaviour
         updateKingCheckStatus(teamColor, checkingPieces.Count);
     }
 
+    public List<ChessPiece> findCartesianChecks(ChessPiece king)
+    {
+        List<Vector2Int> positions = MovementLogic.getCartesianMoves(king);
+        List<ChessPiece> piecesCommittingCheck = new List<ChessPiece>();
+
+        // Check for opposing queens and rooks
+        for (int i = 0; i < positions.Count; i++)
+        {
+            int row = positions[i].y;
+            int col = positions[i].x;
+            int posValue = mainGameDriver.miniGameBoard[col, row];
+
+            if (posValue == 0)
+            {
+                continue;
+            }
+
+            ChessPiece posPiece = mainGameDriver.getPieceAtPos(positions[i]);
+
+            if (posPiece.color != king.color
+                && (posPiece.type == ChessPiece.Type.Queen
+                ||  posPiece.type == ChessPiece.Type.Rook))
+            {
+                print((posPiece.type, posPiece.color, 
+                       posPiece.pos.x, posPiece.pos.y));
+
+                piecesCommittingCheck.Add(posPiece);
+            }
+        }
+
+        return piecesCommittingCheck;
+    }
+
     // Child fx that will check if a given king is in check from the angle
     public List<ChessPiece> findAngularChecks(ChessPiece king)
     {
-        List<Vector2Int> possibleMoves = MovementLogic.getAngledMoves(king);
+        List<Vector2Int> positions = MovementLogic.getAngledMoves(king);
         List<ChessPiece> piecesCommittingCheck = new List<ChessPiece>();
 
         // Check for opposing queens and bishops
-        for (int i = 0; i < possibleMoves.Count; i++)
+        for (int i = 0; i < positions.Count; i++)
         {
-            int row = possibleMoves[i].y;
-            int col = possibleMoves[i].x;
+            int row = positions[i].y;
+            int col = positions[i].x;
 
             int posValue = mainGameDriver.miniGameBoard[col, row];
 
-            if (posValue > 0)
+            if (posValue == 0)
             {
-                ChessPiece posPiece = mainGameDriver.getPieceAtPos(
-                    possibleMoves[i]
-                    );
+                continue;
+            }
 
-                if ((posPiece.color != king.color) && 
-                   ((posPiece.type == ChessPiece.Type.Queen) || 
-                    (posPiece.type == ChessPiece.Type.Bishop)))
-                {
-                    print((posPiece.value, posPiece.pos.x, posPiece.pos.y));
-                    piecesCommittingCheck.Add(posPiece);
-                }
+            ChessPiece posPiece = mainGameDriver.getPieceAtPos(positions[i]);
+
+            if ((posPiece.color != king.color) && 
+                ((posPiece.type == ChessPiece.Type.Queen) || 
+                (posPiece.type == ChessPiece.Type.Bishop)))
+            {
+                print((posPiece.type, posPiece.color, 
+                        posPiece.pos.x, posPiece.pos.y));
+                piecesCommittingCheck.Add(posPiece);
             }
         }
 
