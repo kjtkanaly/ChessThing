@@ -5,6 +5,7 @@ using UnityEngine;
 public class ChessPiece : MonoBehaviour
 {
 public MainGameDriver mainGameDriver;
+public CheckingSystem checkingSystem;
 public ChessBoard chessBoard;
 public SpriteRenderer pieceSprite;
 public Type type;
@@ -17,8 +18,8 @@ public bool enPassing;
 public static string pieceChars = "kpnbrq";
 
 public void InitChessPiece(Type typeValue, 
-                            Color colorValue, 
-                            Vector2Int posValue)
+                           Color colorValue, 
+                           Vector2Int posValue)
 {
     this.type = typeValue;
     this.color = colorValue;
@@ -189,6 +190,19 @@ public bool checkIfAllyPiece(Vector2Int moveCords)
 }
 
 
+public Color getEnemyColor(Color allyColor)
+{
+    if (allyColor == Color.White)
+    {
+        return Color.Black;
+    }
+    else
+    {
+        return Color.White;
+    }
+}
+
+
 //-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-
 
 
@@ -198,6 +212,9 @@ void Start()
 {
     mainGameDriver = GameObject.FindGameObjectWithTag("Game Control").
                         GetComponent<MainGameDriver>();
+
+    checkingSystem = GameObject.FindGameObjectWithTag("Game Control").
+                        GetComponent<CheckingSystem>();
 
     chessBoard = mainGameDriver.chessBoard;
 
@@ -306,6 +323,10 @@ void OnMouseDown()
 
                 chessBoard.dehighlightBoardSpace(boardSpace);
             }
+
+            // Check if enemy king is now in check
+            Color enemyColor = getEnemyColor(color);
+            checkingSystem.checkIfKingIsInCheck(enemyColor);
         }
     }
 }

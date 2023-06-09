@@ -49,7 +49,7 @@ void Start()
 
     DecodeFENString(startingFENString);
 
-    debugMiniBoard();
+    // debugMiniBoard();
 
     populateBoard();
 
@@ -220,6 +220,35 @@ public int getPosIndexNearestPos(float pos, List<int> posArray=null)
     }
 
     return closeIndex;
+}
+
+
+public ChessPiece getTeamKing(ChessPiece.Color teamColor)
+{
+    for (int i = 0; i < chessPieces.Count; i++)
+    {
+        if (chessPieces[i].color == teamColor
+            && chessPieces[i].type == ChessPiece.Type.King)
+        {
+            return chessPieces[i];
+        }
+    }
+
+    return null;
+}
+
+public ChessPiece getPieceAtPos(Vector2Int pos)
+{
+    for (int i = 0; i < chessPieces.Count; i++)
+    {
+        if (chessPieces[i].pos.x == pos.x 
+            && chessPieces[i].pos.y == pos.y)
+        {
+            return chessPieces[i];
+        }
+    }
+
+    return null;
 }
 
 

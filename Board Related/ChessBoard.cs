@@ -54,8 +54,6 @@ public void defineBoardSpots()
     int rowDivValue = boardTexture.width / 8;
     int colDivValue = boardTexture.height / 8;
 
-    print((rowDivValue, colDivValue));
-
     for (int row = 0; row < 8; row++)
     {
         for (int col = 0; col < 8; col++)
@@ -92,15 +90,8 @@ public void defineBoardSpots()
                                                     spaceColor);
 
             boardSpots.Add(newBoardSpot);
-
-            // Debug
-            print((row, col, bottomLeftCorner, 
-                    topRightCorner, normalColor, highlightColor,
-                    spaceColor));
         }
     }
-
-    print(boardSpots.Count);
 }
 
 public void paintTheBoardSpaces()

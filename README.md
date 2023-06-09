@@ -51,8 +51,8 @@ This project will be an outlet for me to return and finish an old project, writn
   - [x] Be able to "place" a piece on the spot
 - [ ] Modern game logic
   - [x] En Passant
-  - [ ] Code overall/clean up
-  - [ ] En passant take doesn't update the minibaord
+  - [x] Code overhall/clean up
+  - [x] En passant take doesn't update the minibaord
   - [ ] Check for king in check
   - [ ] Castling
     
