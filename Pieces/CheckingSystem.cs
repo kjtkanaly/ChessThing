@@ -32,6 +32,7 @@ public class CheckingSystem : MonoBehaviour
         checkingPieces.AddRange(findKnightlyChecks(king));
 
         // Check if the king is in pawn danger
+        checkingPieces.AddRange(findPawnlyChecks(king));
 
         // Update the appropriate king check status
         updateKingCheckStatus(teamColor, checkingPieces.Count);
@@ -80,6 +81,39 @@ public class CheckingSystem : MonoBehaviour
         }
         
         return piecesCommittingCheck;
+    }
+
+    public List<ChessPiece> findPawnlyChecks(ChessPiece king)
+    {
+        List<Vector2Int> positions = new List<Vector2Int>();
+
+        int increment = 1;
+        if (king.color == ChessPiece.Color.Black)
+        {
+            increment = -1;
+        }
+
+        int rowIncrement = king.pos.y + increment;
+        int[] colIncrements = {king.pos.x - 1, king.pos.x + 1};
+
+        // Default
+        if (!(rowIncrement >= 0 && rowIncrement <= 7))
+        {
+            return new List<ChessPiece>();
+        }
+
+        if (colIncrements[0] >= 0)
+        {
+            positions.Add(new Vector2Int(colIncrements[0], rowIncrement));
+        }
+
+        if (colIncrements[0] <= 7)
+        {
+            positions.Add(new Vector2Int(colIncrements[1], rowIncrement));
+        }
+
+        ChessPiece.Type[] checkTypes = {ChessPiece.Type.Pawn};
+        return getCheckingPieces(positions, king.color, checkTypes);
     }
 
     public List<ChessPiece> findKnightlyChecks(ChessPiece king)

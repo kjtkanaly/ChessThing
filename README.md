@@ -57,7 +57,7 @@ This project will be an outlet for me to return and finish an old project, writn
     - [x] Add checks for angular checks
     - [x] Add checks for cartisianal checks
     - [x] Add checks for kightly checks
-    - [ ] Add checks for pawnly checks
+    - [x] Add checks for pawnly checks
     - [ ] Add checks for kingly checks
   - [x] Setup up system to log a king is no longer in check
   - [ ] Castling
