@@ -325,6 +325,9 @@ void OnMouseDown()
             // Check if enemy king is now in check
             Color enemyColor = getEnemyColor(color);
             checkingSystem.checkIfKingIsInCheck(enemyColor);
+
+            // Check if ally king is still in check
+            checkingSystem.checkIfKingIsInCheck(color);
         }
     }
 }

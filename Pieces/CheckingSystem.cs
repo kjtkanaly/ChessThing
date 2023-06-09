@@ -108,16 +108,20 @@ public class CheckingSystem : MonoBehaviour
         int checkPieceCount
         )
     {
+        bool updatedValue = false;
+
         if (checkPieceCount > 0)
         {
-            if (teamColor == ChessPiece.Color.White)
-            {
-                whiteKingInCheck = true;
-            }
-            else
-            {
-                blackKingInCheck = true;
-            }
+            updatedValue = true;
+        }
+
+        if (teamColor == ChessPiece.Color.White)
+        {
+            whiteKingInCheck = updatedValue;
+        }
+        else
+        {
+            blackKingInCheck = updatedValue;
         }
     }
 }
