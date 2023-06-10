@@ -25,6 +25,24 @@ public static List<Vector2Int> gatherPossibleMoves(ChessPiece chessPiece)
     else if (chessPiece.type == ChessPiece.Type.King)
     {
         possibleMoves.AddRange(getKingMoves(chessPiece));
+
+        // Check for castling
+        if (chessPiece.movementCount == 0)
+        {
+            if (checkIfKingCanCastleLeft(chessPiece))
+            {
+                possibleMoves.Add(new Vector2Int(chessPiece.pos.x - 2, 
+                                                 chessPiece.pos.y
+                                                 ));
+            }
+
+            if (checkIfKingCanCastleRight(chessPiece))
+            {
+                possibleMoves.Add(new Vector2Int(chessPiece.pos.x + 2, 
+                                                 chessPiece.pos.y
+                                                 ));
+            }
+        }
     }
 
     else
@@ -175,6 +193,68 @@ public static List<Vector2Int> getKingMoves(ChessPiece chessPiece)
     }
 
     return kingMoves;
+}
+
+public static bool checkIfKingCanCastleRight(ChessPiece king)
+{
+    int[,] miniGameBoard = king.mainGameDriver.miniGameBoard;
+    int row = king.pos.y;
+
+    for (int col = king.pos.x + 1; col <= 6; col++)
+    {
+        if (miniGameBoard[col, row] != 0)
+        {
+            return false;
+        }
+    }
+
+    // Check if the rook is avaliable to castle
+    ChessPiece rook = king.mainGameDriver.getPieceAtPos(
+        new Vector2Int(7, row)
+        );
+
+    if (rook == null)
+    {
+        return false;
+    }
+
+    if ((rook.movementCount > 0) || (rook.type != ChessPiece.Type.Rook))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+public static bool checkIfKingCanCastleLeft(ChessPiece king)
+{
+    int[,] miniGameBoard = king.mainGameDriver.miniGameBoard;
+    int row = king.pos.y;
+
+    for (int col = king.pos.x - 1; col >= 1; col--)
+    {
+        if (miniGameBoard[col, row] != 0)
+        {
+            return false;
+        }
+    }
+
+    // Check if the rook is avaliable to castle
+    ChessPiece rook = king.mainGameDriver.getPieceAtPos(
+        new Vector2Int(0, row)
+        );
+
+    if (rook == null)
+    {
+        return false;
+    }
+
+    if (rook.movementCount > 0 || rook.type != ChessPiece.Type.Rook)
+    {
+        return false;
+    }
+
+    return true;
 }
 
 }

@@ -17,7 +17,7 @@ public static class Pawn
 
         int maxPawnSteps = 1;
 
-        if (pawnPiece.movementCount)
+        if (pawnPiece.movementCount == 0)
         {
             maxPawnSteps = 2;
         }

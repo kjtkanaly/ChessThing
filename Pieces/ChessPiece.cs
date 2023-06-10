@@ -307,12 +307,16 @@ void OnMouseDown()
                                                     );
             mainGameDriver.gameMoves.Add(gameMove);
 
+            // Check if the piece moved
+            if (gridX != pos.x || gridY != pos.y)
+            {
+                movementCount += 1;
+            }
+
             // Update this piece's pos
             pos = new Vector2Int(gridX, gridY);
 
             snapPieceToGrid(gridX, gridY);
-
-            movementCount += 1;
 
             // Dehighlight the possible moves
             chessBoard.paintTheBoardSpacesDefault();
