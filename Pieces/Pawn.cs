@@ -17,7 +17,7 @@ public static class Pawn
 
         int maxPawnSteps = 1;
 
-        if (pawnHasNotMoved(pawnPiece))
+        if (pawnPiece.movementCount)
         {
             maxPawnSteps = 2;
         }
@@ -64,23 +64,6 @@ public static class Pawn
         }
 
         return pawnMoves;
-    }
-
-    public static bool pawnHasNotMoved(ChessPiece pawnPiece)
-    {
-        bool check = false;
-
-        if ((pawnPiece.color == ChessPiece.Color.White) && (pawnPiece.pos.y == 1))
-        {
-            check = true;
-        }
-
-        if ((pawnPiece.color == ChessPiece.Color.Black) && (pawnPiece.pos.y == 6))
-        {   
-            check = true;
-        }
-
-        return check;
     }
 
     public static bool pawnIsBlocked(ChessPiece pawnPiece, 

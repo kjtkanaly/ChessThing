@@ -14,6 +14,7 @@ public Vector2Int pos;
 public Vector2Int enPassingPos;
 public List<Vector2Int> possibleMoves;
 public int value;
+public int movementCount;
 public bool enPassing;
 public static string pieceChars = "kpnbrq";
 
@@ -221,6 +222,7 @@ void Start()
     pieceSprite = this.GetComponent<SpriteRenderer>();
 
     enPassing = false;
+    movementCount = 0;
 
     if (mainGameDriver == null)
     {
@@ -310,17 +312,10 @@ void OnMouseDown()
 
             snapPieceToGrid(gridX, gridY);
 
-            // Dehighlight the possible moves
-            // Display those possible moves
-            for (int i = 1; i < possibleMoves.Count; i++)
-            {
-                int spaceIndex = possibleMoves[i].y * 8 + 
-                                    possibleMoves[i].x;
-                ChessBoard.BoardSpace boardSpace = 
-                    chessBoard.boardSpots[spaceIndex];
+            movementCount += 1;
 
-                chessBoard.dehighlightBoardSpace(boardSpace);
-            }
+            // Dehighlight the possible moves
+            chessBoard.paintTheBoardSpacesDefault();
 
             // Check if enemy king is now in check
             Color enemyColor = getEnemyColor(color);

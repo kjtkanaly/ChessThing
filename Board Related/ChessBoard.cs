@@ -46,7 +46,7 @@ public void initChessBoard()
     BoardImage.texture = boardTexture;
 
     defineBoardSpots();
-    paintTheBoardSpaces();
+    paintTheBoardSpacesDefault();
 }
 
 public void defineBoardSpots()
@@ -94,7 +94,7 @@ public void defineBoardSpots()
     }
 }
 
-public void paintTheBoardSpaces()
+public void paintTheBoardSpacesDefault()
 {
     for (int spaceIndex = 0; spaceIndex < boardSpots.Count; spaceIndex++)
     {
@@ -129,6 +129,11 @@ public void highlightBoardSpace(BoardSpace boardSpace)
     }
 
     boardTexture.Apply();
+}
+
+public void dehighlightBoardSpaces()
+{
+    
 }
 
 public void dehighlightBoardSpace(BoardSpace boardSpace)
