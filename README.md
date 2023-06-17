@@ -61,4 +61,8 @@ This project will be an outlet for me to return and finish an old project, writn
     - [x] Add checks for kingly checks
   - [x] Setup up system to log a king is no longer in check
   - [ ] Castling
+    - [x] Setup up basic castling logic
+    - [x] Edit the check system to use different inputs
+    - [ ] Require Castling to check for the king passing through check
+    - [ ] Move the rook along with the king
     

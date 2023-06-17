@@ -5,19 +5,27 @@ using UnityEngine;
 public class CheckingSystem : MonoBehaviour
 {
     private MainGameDriver mainGameDriver;
+    private GameObject classHolder;
+    private ChessPiece king;
     public bool whiteKingInCheck = false;
     public bool blackKingInCheck = false;
 
     void Start()
     {
         mainGameDriver = this.gameObject.GetComponent<MainGameDriver>();
+
+        classHolder = new GameObject();
+        king = classHolder.AddComponent<ChessPiece>();
     }
 
     // Parent fx that will check if a given team's king is in check
-    public void checkIfKingIsInCheck(ChessPiece.Color teamColor)
+    public void checkIfKingIsInCheck(Vector2Int piecePos, 
+                                     ChessPiece.Color teamColor)
     {
         // Get the team's king
-        ChessPiece king = mainGameDriver.getTeamKing(teamColor);
+        king.InitChessPiece(ChessPiece.Type.King, 
+                            teamColor, 
+                            piecePos);
 
         // Init a list to hold enemy pieces that checked the king
         List<ChessPiece> checkingPieces = new List<ChessPiece>();
