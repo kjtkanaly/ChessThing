@@ -63,6 +63,6 @@ This project will be an outlet for me to return and finish an old project, writn
   - [ ] Castling
     - [x] Setup up basic castling logic
     - [x] Edit the check system to use different inputs
-    - [ ] Require Castling to check for the king passing through check
+    - [x] Require Castling to check for the king passing through check
     - [ ] Move the rook along with the king
     

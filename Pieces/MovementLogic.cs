@@ -198,11 +198,23 @@ public static List<Vector2Int> getKingMoves(ChessPiece chessPiece)
 public static bool checkIfKingCanCastleRight(ChessPiece king)
 {
     int[,] miniGameBoard = king.mainGameDriver.miniGameBoard;
+    CheckingSystem checkingSystem = king.checkingSystem;
     int row = king.pos.y;
+
+    // Check if king is currently in check
+    if (checkingSystem.getTeamCheckStatus(king.color))
+    {
+        return false;
+    }
 
     for (int col = king.pos.x + 1; col <= 6; col++)
     {
-        if (miniGameBoard[col, row] != 0)
+        bool spaceCheck = checkingSystem.checkIfKingIsInCheck(
+            new Vector2Int(col, row),
+            king.color
+            );
+
+        if ((miniGameBoard[col, row] != 0) || spaceCheck)
         {
             return false;
         }
@@ -229,11 +241,23 @@ public static bool checkIfKingCanCastleRight(ChessPiece king)
 public static bool checkIfKingCanCastleLeft(ChessPiece king)
 {
     int[,] miniGameBoard = king.mainGameDriver.miniGameBoard;
+    CheckingSystem checkingSystem = king.checkingSystem;
     int row = king.pos.y;
 
-    for (int col = king.pos.x - 1; col >= 1; col--)
+    // Check if king is currently in check
+    if (checkingSystem.getTeamCheckStatus(king.color))
     {
-        if (miniGameBoard[col, row] != 0)
+        return false;
+    }
+
+    for (int col = king.pos.x - 1; col > 1; col--)
+    {
+        bool spaceCheck = checkingSystem.checkIfKingIsInCheck(
+            new Vector2Int(col, row),
+            king.color
+            );
+
+        if ((miniGameBoard[col, row] != 0) || spaceCheck)
         {
             return false;
         }

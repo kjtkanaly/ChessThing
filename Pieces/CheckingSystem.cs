@@ -19,7 +19,7 @@ public class CheckingSystem : MonoBehaviour
     }
 
     // Parent fx that will check if a given team's king is in check
-    public void checkIfKingIsInCheck(Vector2Int piecePos, 
+    public bool checkIfKingIsInCheck(Vector2Int piecePos, 
                                      ChessPiece.Color teamColor)
     {
         // Get the team's king
@@ -45,8 +45,12 @@ public class CheckingSystem : MonoBehaviour
         // Check if the king is in kingly danger
         checkingPieces.AddRange(findKinglyChecks(king));
 
-        // Update the appropriate king check status
-        updateKingCheckStatus(teamColor, checkingPieces.Count);
+        if (checkingPieces.Count > 0)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     public List<ChessPiece> getCheckingPieces(
@@ -164,25 +168,27 @@ public class CheckingSystem : MonoBehaviour
         return getCheckingPieces(positions, king.color, checkTypes);
     }
 
-    public void updateKingCheckStatus(
-        ChessPiece.Color teamColor,
-        int checkPieceCount
-        )
+    public void updateKingCheckStatus(ChessPiece.Color teamColor, bool check)
     {
-        bool updatedValue = false;
-
-        if (checkPieceCount > 0)
-        {
-            updatedValue = true;
-        }
-
         if (teamColor == ChessPiece.Color.White)
         {
-            whiteKingInCheck = updatedValue;
+            whiteKingInCheck = check;
         }
         else
         {
-            blackKingInCheck = updatedValue;
+            blackKingInCheck = check;
+        }
+    }
+
+    public bool getTeamCheckStatus(ChessPiece.Color teamColor)
+    {
+        if (teamColor == ChessPiece.Color.White)
+        {
+            return whiteKingInCheck;
+        }
+        else
+        {
+            return blackKingInCheck;
         }
     }
 }

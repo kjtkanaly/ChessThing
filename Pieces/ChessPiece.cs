@@ -324,11 +324,14 @@ void OnMouseDown()
             // Check if enemy king is now in check
             Color enemyColor = getEnemyColor(color);
             ChessPiece enemyKing = mainGameDriver.getTeamKing(enemyColor);
-            checkingSystem.checkIfKingIsInCheck(enemyKing.pos, enemyColor);
+            bool check = checkingSystem.checkIfKingIsInCheck(enemyKing.pos, 
+                                                             enemyColor);
+            checkingSystem.updateKingCheckStatus(enemyColor, check);
 
             // Check if ally king is still in check
             ChessPiece allyKing = mainGameDriver.getTeamKing(color);
-            checkingSystem.checkIfKingIsInCheck(allyKing.pos, color);
+            check = checkingSystem.checkIfKingIsInCheck(allyKing.pos, color);
+            checkingSystem.updateKingCheckStatus(color, check);
         }
     }
 }
