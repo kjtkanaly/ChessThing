@@ -16,6 +16,8 @@ public List<Vector2Int> possibleMoves;
 public int value;
 public int movementCount;
 public bool enPassing;
+public bool canCastleRight;
+public bool canCastleLeft;
 public static string pieceChars = "kpnbrq";
 
 public void InitChessPiece(Type typeValue, 
@@ -204,6 +206,21 @@ public Color getEnemyColor(Color allyColor)
 }
 
 
+public bool isKingCastling(Vector2Int newPos)
+{
+    bool pieceCheck = type == Type.King;
+    bool movementCheck = (Mathf.Abs(pos.x - newPos.x) == 2)
+                         && (pos.y == newPos.y);
+
+    if (pieceCheck || movementCheck)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+
 //-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-
 
 
@@ -222,6 +239,8 @@ void Start()
     pieceSprite = this.GetComponent<SpriteRenderer>();
 
     enPassing = false;
+    canCastleLeft = false;
+    canCastleRight = false;
     movementCount = 0;
 
     if (mainGameDriver == null)
@@ -296,8 +315,27 @@ void OnMouseDown()
             // Destory any enPassing Pieces
             removeEnpassingPiece();
 
+            // Check if the king is castling right
+            if (canCastleRight && gridX == 6 && gridY == pos.y)
+            {
+                ChessPiece rook;
+                rook = mainGameDriver.getPieceAtPos(new Vector2Int(7, pos.y));
+                MovementLogic.castleTheRook(rook, new Vector2Int(5, pos.y));
+                canCastleRight = false;
+            }
+            else if (canCastleLeft && gridX == 2 && gridY == pos.y)
+            {
+                ChessPiece rook;
+                rook = mainGameDriver.getPieceAtPos(new Vector2Int(0, pos.y));
+                MovementLogic.castleTheRook(rook, new Vector2Int(3, pos.y));
+                canCastleLeft = false;
+            }
+
             // Update the mini board
             mainGameDriver.updateMiniBoard(gridX, gridY, value);
+
+            // Debug
+            mainGameDriver.debugMiniBoard();
 
             // Log the move
             MainGameDriver.GameMoves gameMove; 

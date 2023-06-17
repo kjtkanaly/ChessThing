@@ -31,6 +31,7 @@ public static List<Vector2Int> gatherPossibleMoves(ChessPiece chessPiece)
         {
             if (checkIfKingCanCastleLeft(chessPiece))
             {
+                chessPiece.canCastleLeft = true;
                 possibleMoves.Add(new Vector2Int(chessPiece.pos.x - 2, 
                                                  chessPiece.pos.y
                                                  ));
@@ -38,6 +39,7 @@ public static List<Vector2Int> gatherPossibleMoves(ChessPiece chessPiece)
 
             if (checkIfKingCanCastleRight(chessPiece))
             {
+                chessPiece.canCastleRight = true;
                 possibleMoves.Add(new Vector2Int(chessPiece.pos.x + 2, 
                                                  chessPiece.pos.y
                                                  ));
@@ -279,6 +281,17 @@ public static bool checkIfKingCanCastleLeft(ChessPiece king)
     }
 
     return true;
+}
+
+
+public static void castleTheRook(ChessPiece rook, Vector2Int newPos)
+{
+    rook.mainGameDriver.updateMiniBoard(rook.pos.x, rook.pos.y, 0);
+
+    // Move the rook
+    rook.snapPieceToGrid(newPos.x, newPos.y);
+
+    rook.mainGameDriver.updateMiniBoard(newPos.x, newPos.y, rook.value);
 }
 
 }
