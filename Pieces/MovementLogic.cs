@@ -173,6 +173,7 @@ public static List<Vector2Int> getLongMoves(ChessPiece chessPiece,
     return longMoves;
 }
 
+
 public static List<Vector2Int> getKingMoves(ChessPiece chessPiece)
 {
     List<Vector2Int> kingMoves = new List<Vector2Int>();
@@ -196,6 +197,41 @@ public static List<Vector2Int> getKingMoves(ChessPiece chessPiece)
 
     return kingMoves;
 }
+
+
+public static void removeInvalidMoves(List<Vector2Int> possibleMoves, 
+                                      ChessPiece piece)
+{
+    CheckingSystem checkingSystem = piece.checkingSystem;
+    MainGameDriver mainGameDriver = piece.mainGameDriver;
+    ChessPiece kingPiece = mainGameDriver.getTeamKing(piece.color);
+
+    Vector2Int originalPos = piece.pos;
+
+    for (int i = possibleMoves.Count - 1; i >= 0; i--)
+    {
+        mainGameDriver.updateMiniBoard(possibleMoves[i].x, 
+                                       possibleMoves[i].y, 
+                                       piece.value);
+
+        piece.pos = new Vector2Int(possibleMoves[i].x, possibleMoves[i].y);
+
+        bool check = checkingSystem.checkIfKingIsInCheck(kingPiece.pos, 
+                                                         piece.color);
+
+        mainGameDriver.updateMiniBoard(possibleMoves[i].x, 
+                                       possibleMoves[i].y, 
+                                       0);
+
+        if (check)
+        {
+            possibleMoves.RemoveAt(i);
+        }
+    }
+
+    piece.pos = originalPos;
+}
+
 
 public static bool checkIfKingCanCastleRight(ChessPiece king)
 {
@@ -240,6 +276,7 @@ public static bool checkIfKingCanCastleRight(ChessPiece king)
     return true;
 }
 
+
 public static bool checkIfKingCanCastleLeft(ChessPiece king)
 {
     int[,] miniGameBoard = king.mainGameDriver.miniGameBoard;
@@ -264,6 +301,7 @@ public static bool checkIfKingCanCastleLeft(ChessPiece king)
             return false;
         }
     }
+
 
     // Check if the rook is avaliable to castle
     ChessPiece rook = king.mainGameDriver.getPieceAtPos(
@@ -293,5 +331,6 @@ public static void castleTheRook(ChessPiece rook, Vector2Int newPos)
 
     rook.mainGameDriver.updateMiniBoard(newPos.x, newPos.y, rook.value);
 }
+
 
 }

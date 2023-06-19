@@ -60,7 +60,6 @@ public class CheckingSystem : MonoBehaviour
     {
         List<ChessPiece> piecesCommittingCheck = new List<ChessPiece>();
 
-        // Check for opposing knights
         for (int i = 0; i < positions.Count; i++)
         {
             int row = positions[i].y;

@@ -279,6 +279,9 @@ void OnMouseDown()
         // Find the possible moves for the piece
         possibleMoves = MovementLogic.gatherPossibleMoves(this);
 
+        // Remove invalid moves due to check rules
+        MovementLogic.removeInvalidMoves(possibleMoves, this);
+
         // Highlight the possible moves
         chessBoard.highlightPossibleMoves(possibleMoves);
     }
@@ -333,9 +336,6 @@ void OnMouseDown()
 
             // Update the mini board
             mainGameDriver.updateMiniBoard(gridX, gridY, value);
-
-            // Debug
-            mainGameDriver.debugMiniBoard();
 
             // Log the move
             MainGameDriver.GameMoves gameMove; 
