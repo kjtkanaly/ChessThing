@@ -4,13 +4,24 @@ using UnityEngine;
 
 public static class Knight
 {
-    
+
 public static List<Vector2Int> getPossibleKnightMoves(ChessPiece knightPiece)
+{
+    Vector2Int pos = knightPiece.pos;
+    ChessPiece.Color teamColor = knightPiece.color;
+    int[,] miniGameBoard = knightPiece.mainGameDriver.miniGameBoard;
+
+    return getPossibleKnightMoves(pos, teamColor, miniGameBoard);
+}
+    
+public static List<Vector2Int> getPossibleKnightMoves(Vector2Int pos, 
+                                                      ChessPiece.Color teamColor,
+                                                      int[,] miniGameBoard)
 {
     List<Vector2Int> knightMoves = new List<Vector2Int>();
 
-    int row = knightPiece.pos.y;
-    int col = knightPiece.pos.x;
+    int row = pos.y;
+    int col = pos.x;
     int[] possibleIndexOffsets = {-2, -1, 1, 2};
 
     for (int i = 0; i < possibleIndexOffsets.Length; i++)
@@ -30,8 +41,11 @@ public static List<Vector2Int> getPossibleKnightMoves(ChessPiece knightPiece)
                 if (!offBoardCheck)
                 {
                     // Check if Move is on ally pieces
-                    bool allyPieceCheck = knightPiece.checkIfAllyPiece(
-                                                moveCords);
+                    int posValue = miniGameBoard[moveCords.x, moveCords.y];
+                    ChessPiece.Color PosColor = ChessPiece.getPieceColorFromInt(
+                                                    posValue
+                                                    );
+                    bool allyPieceCheck = PosColor == teamColor;
 
                     if (!allyPieceCheck)
                     {
