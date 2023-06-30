@@ -66,4 +66,7 @@ This project will be an outlet for me to return and finish an old project, writn
     - [x] Require Castling to check for the king passing through check
     - [x] Move the rook along with the king
   - [ ] Prevent moves to be made that puts one's team in check
+    - [ ] Update the check process and pos list to not rely on piece values
+    - [ ] Simplify gatherPossibleMoves in Movement Logic
+    - [ ] Ahhhhh
     

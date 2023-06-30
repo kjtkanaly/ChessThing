@@ -6,42 +6,54 @@ public static class MovementLogic
 {
 
 public static List<Vector2Int> gatherPossibleMoves(ChessPiece chessPiece)
+{
+    gatherPossibleMoves(chessPiece.type, 
+                        chessPiece.color, 
+                        chessPiece.pos,
+                        mainGameDriver.miniGameBoard);
+}
+
+public static List<Vector2Int> gatherPossibleMoves(ChessPiece.Type pieceType,
+                                                   ChessPiece.Color allyColor,
+                                                   Vector2Int piecePos,
+                                                   int[,] miniGameBoard,
+                                                   int moveCount)
 {   
     List<Vector2Int> possibleMoves = new List<Vector2Int>();
     
     // Add the default move of placing the piece back down
-    possibleMoves.Add(new Vector2Int(chessPiece.pos.x, chessPiece.pos.y));
+    possibleMoves.Add(new Vector2Int(piecePos.x, piecePos.y));
 
-    if (chessPiece.type == ChessPiece.Type.Pawn)
+    if (pieceType == ChessPiece.Type.Pawn)
     {
         possibleMoves.AddRange(Pawn.getPossiblePawnMoves(chessPiece));
     }
 
-    else if (chessPiece.type == ChessPiece.Type.Knight)
+    else if (pieceType == ChessPiece.Type.Knight)
     {
         possibleMoves.AddRange(Knight.getPossibleKnightMoves(chessPiece));
     }
 
-    else if (chessPiece.type == ChessPiece.Type.King)
+    else if (pieceType == ChessPiece.Type.King)
     {
         possibleMoves.AddRange(getKingMoves(chessPiece));
 
         // Check for castling
-        if (chessPiece.movementCount == 0)
+        if (moveCount == 0)
         {
             if (checkIfKingCanCastleLeft(chessPiece))
             {
                 chessPiece.canCastleLeft = true;
-                possibleMoves.Add(new Vector2Int(chessPiece.pos.x - 2, 
-                                                 chessPiece.pos.y
+                possibleMoves.Add(new Vector2Int(piecePos.x - 2, 
+                                                 piecePos.y
                                                  ));
             }
 
             if (checkIfKingCanCastleRight(chessPiece))
             {
                 chessPiece.canCastleRight = true;
-                possibleMoves.Add(new Vector2Int(chessPiece.pos.x + 2, 
-                                                 chessPiece.pos.y
+                possibleMoves.Add(new Vector2Int(piecePos.x + 2, 
+                                                 piecePos.y
                                                  ));
             }
         }
@@ -174,20 +186,26 @@ public static List<Vector2Int> getLongMoves(ChessPiece chessPiece,
 }
 
 
-public static List<Vector2Int> getKingMoves(ChessPiece chessPiece)
+public static List<Vector2Int> getKingMoves(
+    Vector2Int piecePos,
+    ChessPiece.Color allyColor,
+    int[,] miniGameBoard)
 {
     List<Vector2Int> kingMoves = new List<Vector2Int>();
 
-    for (int row = chessPiece.pos.y - 1; row <= chessPiece.pos.y + 1; row++)
+    for (int row = piecePos.y - 1; row <= piecePos.y + 1; row++)
     {
-        for (int col = chessPiece.pos.x - 1; col <= chessPiece.pos.x + 1; col++)
+        for (int col = piecePos.x - 1; col <= piecePos.x + 1; col++)
         {
-            bool currentSpot = (row == chessPiece.pos.y) & (col == chessPiece.pos.x);
+            bool currentSpot = (row == piecePos.y) & (col == piecePos.x);
             bool outOfBounds = (row < 8) & (col < 8) & (row > -1) & (col > -1);
 
             if (!currentSpot & outOfBounds)
             {
-                if (!chessPiece.checkIfAllyPiece(new Vector2Int(col, row)))
+                ChessPiece.Color posColor = 
+                    ChessPiece.getPieceColorFromInt(miniGameBoard[col, row]);
+
+                if (posColor != allyColor)
                 {
                     kingMoves.Add(new Vector2Int(col, row));
                 }
@@ -202,9 +220,9 @@ public static List<Vector2Int> getKingMoves(ChessPiece chessPiece)
 public static void removeInvalidMoves(List<Vector2Int> possibleMoves, 
                                       ChessPiece piece)
 {
-    CheckingSystem checkingSystem = piece.checkingSystem;
     MainGameDriver mainGameDriver = piece.mainGameDriver;
     ChessPiece kingPiece = mainGameDriver.getTeamKing(piece.color);
+    int[,] miniGameBoard = mainGameDriver.miniGameBoard;
 
     Vector2Int originalPos = piece.pos;
 
@@ -216,8 +234,9 @@ public static void removeInvalidMoves(List<Vector2Int> possibleMoves,
 
         piece.pos = new Vector2Int(possibleMoves[i].x, possibleMoves[i].y);
 
-        bool check = checkingSystem.checkIfKingIsInCheck(kingPiece.pos, 
-                                                         piece.color);
+        bool check = CheckingSystem.checkIfKingIsInCheck(kingPiece.pos, 
+                                                         piece.color,
+                                                         miniGameBoard);
 
         mainGameDriver.updateMiniBoard(possibleMoves[i].x, 
                                        possibleMoves[i].y, 
