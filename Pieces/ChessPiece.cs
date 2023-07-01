@@ -5,7 +5,6 @@ using UnityEngine;
 public class ChessPiece : MonoBehaviour
 {
 public MainGameDriver mainGameDriver;
-public CheckingSystem checkingSystem;
 public ChessBoard chessBoard;
 public SpriteRenderer pieceSprite;
 public Type type;
@@ -20,15 +19,16 @@ public bool canCastleRight;
 public bool canCastleLeft;
 public static string pieceChars = "kpnbrq";
 
-public void InitChessPiece(Type typeValue, 
-                           Color colorValue, 
+public void InitChessPiece(int value, 
                            Vector2Int posValue)
 {
-    this.type = typeValue;
-    this.color = colorValue;
-    this.pos = posValue;
+    Type type = getPieceTypeFromInt(value);
+    Color color = getPieceColorFromInt(value);
 
-    this.value = (int) type + (int) color;
+    this.value = value;
+    this.type = type;
+    this.color = color;
+    this.pos = posValue;
 }
 
 public enum Type
@@ -231,9 +231,6 @@ void Start()
     mainGameDriver = GameObject.FindGameObjectWithTag("Game Control").
                         GetComponent<MainGameDriver>();
 
-    checkingSystem = GameObject.FindGameObjectWithTag("Game Control").
-                        GetComponent<CheckingSystem>();
-
     chessBoard = mainGameDriver.chessBoard;
 
     pieceSprite = this.GetComponent<SpriteRenderer>();
@@ -279,9 +276,6 @@ void OnMouseDown()
         // Find the possible moves for the piece
         possibleMoves = MovementLogic.gatherPossibleMoves(this);
 
-        // Remove invalid moves due to check rules
-        MovementLogic.removeInvalidMoves(possibleMoves, this);
-
         // Highlight the possible moves
         chessBoard.highlightPossibleMoves(possibleMoves);
     }
@@ -318,22 +312,6 @@ void OnMouseDown()
             // Destory any enPassing Pieces
             removeEnpassingPiece();
 
-            // Check if the king is castling right
-            if (canCastleRight && gridX == 6 && gridY == pos.y)
-            {
-                ChessPiece rook;
-                rook = mainGameDriver.getPieceAtPos(new Vector2Int(7, pos.y));
-                MovementLogic.castleTheRook(rook, new Vector2Int(5, pos.y));
-                canCastleRight = false;
-            }
-            else if (canCastleLeft && gridX == 2 && gridY == pos.y)
-            {
-                ChessPiece rook;
-                rook = mainGameDriver.getPieceAtPos(new Vector2Int(0, pos.y));
-                MovementLogic.castleTheRook(rook, new Vector2Int(3, pos.y));
-                canCastleLeft = false;
-            }
-
             // Update the mini board
             mainGameDriver.updateMiniBoard(gridX, gridY, value);
 
@@ -358,18 +336,6 @@ void OnMouseDown()
 
             // Dehighlight the possible moves
             chessBoard.paintTheBoardSpacesDefault();
-
-            // Check if enemy king is now in check
-            Color enemyColor = getEnemyColor(color);
-            ChessPiece enemyKing = mainGameDriver.getTeamKing(enemyColor);
-            bool check = checkingSystem.checkIfKingIsInCheck(enemyKing.pos, 
-                                                             enemyColor);
-            checkingSystem.updateKingCheckStatus(enemyColor, check);
-
-            // Check if ally king is still in check
-            ChessPiece allyKing = mainGameDriver.getTeamKing(color);
-            check = checkingSystem.checkIfKingIsInCheck(allyKing.pos, color);
-            checkingSystem.updateKingCheckStatus(color, check);
         }
     }
 }

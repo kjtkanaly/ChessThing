@@ -67,8 +67,6 @@ public void calcBoardPositions(int center, int spacing)
     {
         pieceTexturePositions.Add(center + (i * spacing));
     }
-
-    //pieceTexturePositions.Reverse();
 }
 
 
@@ -83,42 +81,6 @@ public void initChessGameObjects()
         newPiece.SetActive(false);
 
         chessPieces.Add(newPiece.GetComponent<ChessPiece>());
-    }
-}
-
-
-public void populateBoard()
-{ 
-    int pieceBankIndex = 0;
-
-    for (int row = miniGameBoard.GetLength(0) - 1; row >= 0; row--)
-    {
-        for (int col = 0; col < miniGameBoard.GetLength(1); col++)
-            if (miniGameBoard[col, row] > 0)
-            {   
-                ChessPiece pieceInfo = chessPieces[pieceBankIndex];
-                GameObject chessPiece = pieceInfo.gameObject;
-
-                ChessPiece.Type pieceType = ChessPiece.getPieceTypeFromInt(
-                    miniGameBoard[col, row]);
-                ChessPiece.Color pieceColor = ChessPiece.getPieceColorFromInt(
-                    miniGameBoard[col, row]);
-
-                pieceInfo.InitChessPiece(pieceType, 
-                                        pieceColor,
-                                        new Vector2Int(col, row));
-
-                chessPiece.transform.position = new Vector3(
-                    pieceTexturePositions[pieceInfo.pos.x], 
-                    pieceTexturePositions[pieceInfo.pos.y]);
-
-                ChessPiece.setPieceSprite(chessPiece, 
-                                        pieceInfo);
-
-                chessPiece.SetActive(true);
-
-                pieceBankIndex += 1;
-            }
     }
 }
 
@@ -153,6 +115,48 @@ public void DecodeFENString(string fenString) {
     if (playerColor == ChessPiece.Color.White) {
         miniGameBoard = General.vertVlipArray(miniGameBoard);
     }
+}
+
+
+public void populateBoard() { 
+    int pieceBankIndex = 0;
+
+    for (int row = miniGameBoard.GetLength(0) - 1; row >= 0; row--) {
+
+        for (int col = 0; col < miniGameBoard.GetLength(1); col++) {
+
+            if (miniGameBoard[col, row] > 0) {   
+                activatePiece(pieceBankIndex, 
+                              miniGameBoard[col, row], 
+                              new Vector2Int(col, row)
+                              );
+
+                pieceBankIndex += 1;
+            }
+        }
+    }
+}
+
+
+public void activatePiece(int pieceIndex, int pieceVal, Vector2Int piecePos) {
+    ChessPiece pieceInfo = chessPieces[pieceIndex];
+    GameObject chessPiece = pieceInfo.gameObject;
+
+    // Assign the object the appropriate piece info
+    pieceInfo.InitChessPiece(pieceVal,
+                             piecePos);
+
+    // Move the object to the texture position
+    chessPiece.transform.position = new Vector3(
+        pieceTexturePositions[pieceInfo.pos.x], 
+        pieceTexturePositions[pieceInfo.pos.y]);
+
+    // Set the piece's appropriate sprite
+    ChessPiece.setPieceSprite(chessPiece, 
+                              pieceInfo);
+
+    // Finally, activate the piece's gameobject
+    chessPiece.SetActive(true);
 }
 
 
