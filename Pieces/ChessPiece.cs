@@ -289,55 +289,61 @@ void OnMouseDown()
         int gridY =  mainGameDriver.getPosIndexNearestPos(thisPosition.y);
 
         // Check if the closes grid positions are valid moves
-        bool validMove = false;
         for (int i = 0; i < possibleMoves.Count; i++)
         {
-            if (possibleMoves[i].x == gridX && possibleMoves[i].y == gridY)
-            {
-                validMove = true;
+            if (possibleMoves[i].x == gridX && possibleMoves[i].y == gridY) {
+                bool newSpot = false;
+                if (gridX != pos.x || gridY != pos.y) {
+                    newSpot = true;
+                }
+
+                movingPiece(newSpot, new Vector2Int(gridX, gridY));
+
                 break;
             }
         }
-        
-        if (validMove)
-        {
-            pieceSprite.sortingOrder = mainGameDriver.normalSpriteLayer;
-
-            isSelected = false;
-            mainGameDriver.aPieceIsSelected = false;
-
-            // Destroy any piece on the new spot
-            removeImpedingPiece(gridX, gridY);
-
-            // Destory any enPassing Pieces
-            removeEnpassingPiece();
-
-            // Update the mini board
-            mainGameDriver.updateMiniBoard(gridX, gridY, value);
-
-            // Log the move
-            MainGameDriver.GameMoves gameMove; 
-            gameMove = new MainGameDriver.GameMoves(this, 
-                                                    pos, 
-                                                    new Vector2Int(gridX, gridY)
-                                                    );
-            mainGameDriver.gameMoves.Add(gameMove);
-
-            // Check if the piece moved
-            if (gridX != pos.x || gridY != pos.y)
-            {
-                movementCount += 1;
-            }
-
-            // Update this piece's pos
-            pos = new Vector2Int(gridX, gridY);
-
-            snapPieceToGrid(gridX, gridY);
-
-            // Dehighlight the possible moves
-            chessBoard.paintTheBoardSpacesDefault();
-        }
     }
 }
+
+
+public void movingPiece(bool newSpot, Vector2Int movePos) {
+    if (newSpot) {
+        // Destroy any piece on the new spot
+        removeImpedingPiece(movePos.x, movePos.y);
+
+        // Destory any enPassing Pieces
+        removeEnpassingPiece();
+
+        // Log the move in the master list
+        MainGameDriver.GameMoves gameMove; 
+        gameMove = new MainGameDriver.GameMoves(this, 
+                                                pos, 
+                                                movePos
+                                                );
+        mainGameDriver.gameMoves.Add(gameMove);
+
+        // Log that this piece has now moved
+        movementCount += 1;
+    }
+
+    // Set the object's sprite back to the normal layer
+    pieceSprite.sortingOrder = mainGameDriver.normalSpriteLayer;
+
+    // Update the mini board
+    mainGameDriver.updateMiniBoard(movePos.x, movePos.y, value);
+
+    // Update this piece's pos
+    pos = new Vector2Int(movePos.x, movePos.y);
+
+    snapPieceToGrid(movePos.x, movePos.y);
+
+    // Dehighlight the possible moves
+    chessBoard.paintTheBoardSpacesDefault();
+
+    // Log that we are no longer holding a piece
+    isSelected = false;
+    mainGameDriver.aPieceIsSelected = false;
+}
+
 
 }
