@@ -128,8 +128,8 @@ public void snapPieceToGrid(int posXIndex, int posYIndex)
 {
     Vector3 currentPosition = this.transform.position;
 
-    currentPosition.x = mainGameDriver.piecePositions[posXIndex];
-    currentPosition.y = mainGameDriver.piecePositions[posYIndex];
+    currentPosition.x = mainGameDriver.pieceTexturePositions[posXIndex];
+    currentPosition.y = mainGameDriver.pieceTexturePositions[posYIndex];
 
     this.transform.position = currentPosition;
 }

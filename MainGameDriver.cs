@@ -10,14 +10,15 @@ public GameObject chessPiecePreFab;
 public List<ChessPiece> chessPieces;
 public List<GameMoves> gameMoves;
 public Sprite[] WhiteSpriteList, BlackSpriteList;
-public List<int> piecePositions;
+public List<int> pieceTexturePositions;
 public int[,] miniGameBoard;
 public bool aPieceIsSelected = false;
 public int normalSpriteLayer = 50;
 public int selectedSpriteLayer = 60;
+const int maxNumberOfPieces = 32;
 const string startingFENString = 
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-const int maxNumberOfPieces = 32;
+ChessPiece.Color playerColor = ChessPiece.Color.White;
 
 public struct GameMoves
 {
@@ -41,33 +42,33 @@ void Start()
     chessBoard.initChessBoard();
 
     calcBoardPositions(chessBoard.textureSize.x / 16, 
-                        chessBoard.textureSize.x / 8);
-
+                       chessBoard.textureSize.x / 8);
+    
     initChessGameObjects();
 
     miniGameBoard = new int[8, 8];
 
     DecodeFENString(startingFENString);
-
-    // debugMiniBoard();
+    debugMiniBoard();
 
     populateBoard();
 
     // Init the game moves list
     gameMoves = new List<GameMoves>();
+    /**/
 }
 
 
 public void calcBoardPositions(int center, int spacing)
 {
-    piecePositions = new List<int>();
+    pieceTexturePositions = new List<int>();
 
     for (int i = -4; i < 4; i++)
     {
-        piecePositions.Add(center + (i * spacing));
+        pieceTexturePositions.Add(center + (i * spacing));
     }
 
-    //piecePositions.Reverse();
+    //pieceTexturePositions.Reverse();
 }
 
 
@@ -108,8 +109,8 @@ public void populateBoard()
                                         new Vector2Int(col, row));
 
                 chessPiece.transform.position = new Vector3(
-                    piecePositions[pieceInfo.pos.x], 
-                    piecePositions[pieceInfo.pos.y]);
+                    pieceTexturePositions[pieceInfo.pos.x], 
+                    pieceTexturePositions[pieceInfo.pos.y]);
 
                 ChessPiece.setPieceSprite(chessPiece, 
                                         pieceInfo);
@@ -122,52 +123,36 @@ public void populateBoard()
 }
 
 
-public int[] DecodeFENString(string fenString)
-{
-    int[] boardVector = new int[8 * 8];
-
-    int fenIndex = 0;
-    int boardIndex = 0;
-
-    int row = 7;
-    int col = 0;
-
-    // Replace the '/' and split at the first ' '
-    fenString = fenString.Replace("/", string.Empty);
+public void DecodeFENString(string fenString) {
     fenString = fenString.Split(' ')[0];
 
-    while (fenIndex < fenString.Length)
+    int boardIndex = 0;
+    int row = 0;
+    int col = 0;
+
+    for (int fenIndex = 0; fenIndex < fenString.Length; fenIndex++)
     {
-        // FEN Index is a piece
-        if (isNextFenCharAPiece(fenString[fenIndex]))
-        {
-            boardVector[boardIndex] = ChessPiece.getPieceValue(
-                                            fenString[fenIndex]);
-
-            boardIndex++;
-
-            miniGameBoard[col, row] = ChessPiece.getPieceValue(
-                                            fenString[fenIndex]);
-            
-            col += 1;
+        if (fenString[fenIndex] == '/') {
+            continue;
         }
-        // FEN is blank space
-        else
-        {
+
+        if (!System.Char.IsNumber(fenString, fenIndex)) {
+            row = (int)(boardIndex % 8);
+            col = (int)(boardIndex / 8);
+
+            // Convert Char to piece value
+            miniGameBoard[row, col] = 
+                ChessPiece.getPieceValue(fenString[fenIndex]);
+            boardIndex += 1;
+        }
+        else {
             boardIndex += int.Parse("" + fenString[fenIndex]);
-            col += int.Parse("" + fenString[fenIndex]);
         }
-
-        if (col >= 8)
-        {
-            col = 0;
-            row -= 1;
-        }
-
-        fenIndex++;
     }
 
-    return boardVector;
+    if (playerColor == ChessPiece.Color.White) {
+        miniGameBoard = General.vertVlipArray(miniGameBoard);
+    }
 }
 
 
@@ -206,7 +191,7 @@ public int getPosIndexNearestPos(float pos, List<int> posArray=null)
     // Default
     if (posArray == null)
     {
-        posArray = piecePositions;
+        posArray = pieceTexturePositions;
     }
 
     int closeIndex = 0;
