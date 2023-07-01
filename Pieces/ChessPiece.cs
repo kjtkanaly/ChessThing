@@ -277,7 +277,7 @@ void OnMouseDown()
         mainGameDriver.updateMiniBoard(pos.x, pos.y, 0);
 
         // Find the possible moves for the piece
-        possibleMoves = MovementLogic.gatherPossibleMoves(this);
+        possibleMoves = MovementLogic.getPossibleMoves(this);
 
         // Remove invalid moves due to check rules
         MovementLogic.removeInvalidMoves(possibleMoves, this);

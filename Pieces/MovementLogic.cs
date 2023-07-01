@@ -2,23 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class MovementLogic
+public class MovementLogic
 {
 
-public static List<Vector2Int> gatherPossibleMoves(ChessPiece chessPiece)
+public static List<Vector2Int> getPossibleMoves(ChessPiece chessPiece)
 {
-    gatherPossibleMoves(chessPiece.type, 
-                        chessPiece.color, 
-                        chessPiece.pos,
-                        mainGameDriver.miniGameBoard);
+    getPossibleMoves(chessPiece.val, 
+                     chessPiece.pos,
+                     mainGameDriver.miniGameBoard
+                     );
 }
 
-public static List<Vector2Int> gatherPossibleMoves(ChessPiece.Type pieceType,
-                                                   ChessPiece.Color allyColor,
-                                                   Vector2Int piecePos,
-                                                   int[,] miniGameBoard,
-                                                   int moveCount)
+public static List<Vector2Int> getPossibleMoves(int pieceVal,
+                                                Vector2Int piecePos,
+                                                int[,] miniGameBoard,
+                                                int moveCount)
 {   
+    ChessPiece.Type pieceType = ChessPiece.getPieceTypeFromInt(pieceVal);
+    ChessPiece.Color allyColor = ChessPiece.getPieceColorFromInt(pieceVal);
     List<Vector2Int> possibleMoves = new List<Vector2Int>();
     
     // Add the default move of placing the piece back down
@@ -31,32 +32,16 @@ public static List<Vector2Int> gatherPossibleMoves(ChessPiece.Type pieceType,
 
     else if (pieceType == ChessPiece.Type.Knight)
     {
-        possibleMoves.AddRange(Knight.getPossibleKnightMoves(chessPiece));
+        possibleMoves.AddRange(
+            Knight.allyColor(piecePos, allyColor, miniGameBoard)
+            );
     }
 
     else if (pieceType == ChessPiece.Type.King)
     {
-        possibleMoves.AddRange(getKingMoves(chessPiece));
-
-        // Check for castling
-        if (moveCount == 0)
-        {
-            if (checkIfKingCanCastleLeft(chessPiece))
-            {
-                chessPiece.canCastleLeft = true;
-                possibleMoves.Add(new Vector2Int(piecePos.x - 2, 
-                                                 piecePos.y
-                                                 ));
-            }
-
-            if (checkIfKingCanCastleRight(chessPiece))
-            {
-                chessPiece.canCastleRight = true;
-                possibleMoves.Add(new Vector2Int(piecePos.x + 2, 
-                                                 piecePos.y
-                                                 ));
-            }
-        }
+        possibleMoves.AddRange(
+            King.getMoves(piecePos, allyColor, miniGameBoard)
+            );
     }
 
     else
@@ -183,37 +168,6 @@ public static List<Vector2Int> getLongMoves(ChessPiece chessPiece,
     }
 
     return longMoves;
-}
-
-
-public static List<Vector2Int> getKingMoves(
-    Vector2Int piecePos,
-    ChessPiece.Color allyColor,
-    int[,] miniGameBoard)
-{
-    List<Vector2Int> kingMoves = new List<Vector2Int>();
-
-    for (int row = piecePos.y - 1; row <= piecePos.y + 1; row++)
-    {
-        for (int col = piecePos.x - 1; col <= piecePos.x + 1; col++)
-        {
-            bool currentSpot = (row == piecePos.y) & (col == piecePos.x);
-            bool outOfBounds = (row < 8) & (col < 8) & (row > -1) & (col > -1);
-
-            if (!currentSpot & outOfBounds)
-            {
-                ChessPiece.Color posColor = 
-                    ChessPiece.getPieceColorFromInt(miniGameBoard[col, row]);
-
-                if (posColor != allyColor)
-                {
-                    kingMoves.Add(new Vector2Int(col, row));
-                }
-            }
-        }
-    }
-
-    return kingMoves;
 }
 
 

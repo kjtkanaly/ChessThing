@@ -4,19 +4,10 @@ using UnityEngine;
 
 public static class Knight
 {
-
-public static List<Vector2Int> getPossibleKnightMoves(ChessPiece knightPiece)
-{
-    Vector2Int pos = knightPiece.pos;
-    ChessPiece.Color teamColor = knightPiece.color;
-    int[,] miniGameBoard = knightPiece.mainGameDriver.miniGameBoard;
-
-    return getPossibleKnightMoves(pos, teamColor, miniGameBoard);
-}
     
-public static List<Vector2Int> getPossibleKnightMoves(Vector2Int pos, 
-                                                      ChessPiece.Color teamColor,
-                                                      int[,] miniGameBoard)
+public static List<Vector2Int> getMoves(Vector2Int pos, 
+                                        ChessPiece.Color teamColor,
+                                        int[,] miniGameBoard)
 {
     List<Vector2Int> knightMoves = new List<Vector2Int>();
 
