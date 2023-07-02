@@ -335,6 +335,9 @@ public void movingPiece(bool newSpot, Vector2Int movePos) {
 
         // Update the active color in the FEN String
         mainGameDriver.iterateActiveColor(color);
+
+        // Debug
+        print(mainGameDriver.FENString);
     }
 
     // Set the object's sprite back to the normal layer
@@ -358,13 +361,13 @@ public void movingPiece(bool newSpot, Vector2Int movePos) {
 
 
 public void checkIfEnPassing(Vector2Int movePos) {
-    if (type != Type.Pawn) {
-        return;
+    bool enPassingCheck = false;
+
+    if ((type == Type.Pawn) && (Mathf.Abs(movePos.y - pos.y) == 2)) {
+        enPassingCheck = true;
     }
 
-    if (Mathf.Abs(movePos.y - pos.y) == 2) {
-        mainGameDriver.logFENStringEnPassing(movePos);
-    }
+    mainGameDriver.logPieceEnPassing(enPassingCheck, movePos);
 
     return;
 }

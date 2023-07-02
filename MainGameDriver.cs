@@ -16,7 +16,7 @@ public bool aPieceIsSelected = false;
 public int normalSpriteLayer = 50;
 public int selectedSpriteLayer = 60;
 const int maxNumberOfPieces = 32;
-string FENString;
+public string FENString;
 ChessPiece.Color playerColor = ChessPiece.Color.White;
 const string colCord = "abcdefgh";
 const string rowCord = "12345678";
@@ -182,29 +182,33 @@ public ChessPiece.Color getActiveColor() {
 
 public void iterateActiveColor(ChessPiece.Color oldColor) {
 
-    int activeColorIndex = FENString.IndexOf(" ") + 1;
-    FENString = FENString.Remove(activeColorIndex, 1);
+    string[] FENStrings = FENString.Split(" ");
 
     if (oldColor == ChessPiece.Color.White) {
-        FENString = FENString.Insert(activeColorIndex, "b");
+        FENString = FENStrings[1] = "b";
     }
     else {
-        FENString = FENString.Insert(activeColorIndex, "w");
+        FENString = FENStrings[1] = "w";
     }
+
+    FENString = string.Join(" ", FENStrings);
 }
 
 
-public void logFENStringEnPassing(Vector2Int movePos) {
-    char row = rowCord[movePos.y];
-    char col = colCord[movePos.x];
-
+public void logPieceEnPassing(bool enPassing, Vector2Int movePos) {
     string[] FENStrings = FENString.Split(" ");
 
-    FENStrings[3] = "" + col + row;
+    if (enPassing) {
+        char row = rowCord[movePos.y];
+        char col = colCord[movePos.x];
+
+        FENStrings[3] = "" + col + row;
+    }
+    else {
+        FENStrings[3] = "-";
+    }
 
     FENString = string.Join(" ", FENStrings);
-
-    print(FENString);
 }
 
 
