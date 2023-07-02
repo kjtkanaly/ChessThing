@@ -330,6 +330,9 @@ public void movingPiece(bool newSpot, Vector2Int movePos) {
         // Log that this piece has now moved
         movementCount += 1;
 
+        // Log if piece is pawn that is now EnPassing
+        checkIfEnPassing(movePos);
+
         // Update the active color in the FEN String
         mainGameDriver.iterateActiveColor(color);
     }
@@ -351,6 +354,19 @@ public void movingPiece(bool newSpot, Vector2Int movePos) {
     // Log that we are no longer holding a piece
     isSelected = false;
     mainGameDriver.aPieceIsSelected = false;
+}
+
+
+public void checkIfEnPassing(Vector2Int movePos) {
+    if (type != Type.Pawn) {
+        return;
+    }
+
+    if (Mathf.Abs(movePos.y - pos.y) == 2) {
+        mainGameDriver.logFENStringEnPassing(movePos);
+    }
+
+    return;
 }
 
 

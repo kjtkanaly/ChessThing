@@ -18,6 +18,8 @@ public int selectedSpriteLayer = 60;
 const int maxNumberOfPieces = 32;
 string FENString;
 ChessPiece.Color playerColor = ChessPiece.Color.White;
+const string colCord = "abcdefgh";
+const string rowCord = "12345678";
 
 public struct GameMoves
 {
@@ -189,6 +191,20 @@ public void iterateActiveColor(ChessPiece.Color oldColor) {
     else {
         FENString = FENString.Insert(activeColorIndex, "w");
     }
+}
+
+
+public void logFENStringEnPassing(Vector2Int movePos) {
+    char row = rowCord[movePos.y];
+    char col = colCord[movePos.x];
+
+    string[] FENStrings = FENString.Split(" ");
+
+    FENStrings[3] = "" + col + row;
+
+    FENString = string.Join(" ", FENStrings);
+
+    print(FENString);
 }
 
 
