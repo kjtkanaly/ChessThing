@@ -178,6 +178,20 @@ public ChessPiece.Color getActiveColor() {
 }
 
 
+public void iterateActiveColor(ChessPiece.Color oldColor) {
+
+    int activeColorIndex = FENString.IndexOf(" ") + 1;
+    FENString = FENString.Remove(activeColorIndex, 1);
+
+    if (oldColor == ChessPiece.Color.White) {
+        FENString = FENString.Insert(activeColorIndex, "b");
+    }
+    else {
+        FENString = FENString.Insert(activeColorIndex, "w");
+    }
+}
+
+
 private bool isNextFenCharAPiece(char fenChar)
 {
     if (char.IsNumber(fenChar) || (fenChar == '/'))

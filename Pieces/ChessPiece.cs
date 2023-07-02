@@ -329,6 +329,9 @@ public void movingPiece(bool newSpot, Vector2Int movePos) {
 
         // Log that this piece has now moved
         movementCount += 1;
+
+        // Update the active color in the FEN String
+        mainGameDriver.iterateActiveColor(color);
     }
 
     // Set the object's sprite back to the normal layer
