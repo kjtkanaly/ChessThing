@@ -16,8 +16,7 @@ public bool aPieceIsSelected = false;
 public int normalSpriteLayer = 50;
 public int selectedSpriteLayer = 60;
 const int maxNumberOfPieces = 32;
-const string startingFENString = 
-    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+string FENString;
 ChessPiece.Color playerColor = ChessPiece.Color.White;
 
 public struct GameMoves
@@ -39,6 +38,10 @@ public struct GameMoves
 
 void Start()
 {
+    // Set the initial FEN String
+    FENString = 
+        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
     chessBoard.initChessBoard();
 
     calcBoardPositions(chessBoard.textureSize.x / 16, 
@@ -48,14 +51,13 @@ void Start()
 
     miniGameBoard = new int[8, 8];
 
-    DecodeFENString(startingFENString);
+    DecodeFENString(FENString);
     debugMiniBoard();
 
     populateBoard();
 
     // Init the game moves list
     gameMoves = new List<GameMoves>();
-    /**/
 }
 
 
@@ -157,6 +159,22 @@ public void activatePiece(int pieceIndex, int pieceVal, Vector2Int piecePos) {
 
     // Finally, activate the piece's gameobject
     chessPiece.SetActive(true);
+}
+
+
+public ChessPiece.Color getActiveColor() {
+    ChessPiece.Color activeColor;
+
+    string colorString = FENString.Split(' ')[1];
+
+    if (colorString.ToLower() == "w") {
+        activeColor = ChessPiece.Color.White;
+    } 
+    else {
+        activeColor = ChessPiece.Color.Black;
+    }
+
+    return activeColor;
 }
 
 

@@ -65,5 +65,7 @@ This project will be an outlet for me to return and finish an old project, writn
     - [x] Edit the check system to use different inputs
     - [x] Require Castling to check for the king passing through check
     - [x] Move the rook along with the king
+  - [ ] Update the FEN string along with the game
+  - [ ] Take more advantage of FEN strings
   - [ ] Prevent moves to be made that puts one's team in check
     

@@ -263,6 +263,11 @@ void OnMouseDown()
     // Picking a piece up
     if (!mainGameDriver.aPieceIsSelected)
     {
+        // Check if it is the piece's team's turn
+        if (mainGameDriver.getActiveColor() != color) {
+            return;
+        }
+
         // Bring the pieces sprite level up
         pieceSprite.sortingOrder = mainGameDriver.selectedSpriteLayer;
 
