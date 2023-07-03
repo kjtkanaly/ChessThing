@@ -212,6 +212,70 @@ public void logPieceEnPassing(bool enPassing, Vector2Int movePos) {
 }
 
 
+public void checkRooksAndKings()
+{
+    // Check if the rooks have moved
+    int tgtIndex = 0;
+    string[] targetStrs = {"Q", "K", "q", "k"};
+
+    for (int row = 0; row < 8; row += 7) {   
+        for (int col = 0; col < 8; col += 7) {
+            int posValue = miniGameBoard[col, row];
+            ChessPiece.Type posType = ChessPiece.getPieceTypeFromInt(posValue);
+
+            if (posType != ChessPiece.Type.Rook) {
+                voidCastleFENString(targetStrs[tgtIndex]);
+            }
+
+            tgtIndex++;
+        }
+    }
+
+    // Check if the kings have moved
+    for (int row = 0; row < 8; row += 7) {
+        int col = 4;
+
+        int posValue = miniGameBoard[col, row];
+        ChessPiece.Type posType = ChessPiece.getPieceTypeFromInt(posValue);
+
+        if (posType != ChessPiece.Type.King) {
+            string[] target = new string[2];
+
+            if (row == 0) {
+                target[0] = "K";
+                target[1] = "Q";
+            }
+            else {
+                target[0] = "k";
+                target[1] = "q";
+            }
+
+            voidCastleFENString(target);
+        }
+    }
+}
+
+
+public void voidCastleFENString(string[] targets) {
+    for (int i = 0; i < targets.Length; i++) {
+        voidCastleFENString(targets[i]);
+    }
+}
+
+
+public void voidCastleFENString(string target) {
+    string[] FENStrings = FENString.Split(" ");
+
+    FENStrings[2] = FENStrings[2].Replace(target, "");
+
+    if (FENStrings[2] == "") {
+        FENStrings[2] = "-";
+    }
+
+    FENString = string.Join(" ", FENStrings);
+}
+
+
 private bool isNextFenCharAPiece(char fenChar)
 {
     if (char.IsNumber(fenChar) || (fenChar == '/'))

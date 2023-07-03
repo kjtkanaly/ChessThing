@@ -336,6 +336,9 @@ public void movingPiece(bool newSpot, Vector2Int movePos) {
         // Update the active color in the FEN String
         mainGameDriver.iterateActiveColor(color);
 
+        // Check for appropriate updates to the castling log in FEN string
+        mainGameDriver.checkRooksAndKings();
+
         // Debug
         print(mainGameDriver.FENString);
     }
