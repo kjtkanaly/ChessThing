@@ -122,6 +122,57 @@ public void DecodeFENString(string fenString) {
 }
 
 
+public void convertBoardToString(){
+    string outputFEN = "";
+
+    for (int i = 0; i < miniGameBoard.GetLength(0); i++) {
+        int[] row = getRow(miniGameBoard, i);
+        string rowString = "";
+
+        foreach (int val in row) {
+            string valString = ChessPiece.getPieceLetterFromValue(val);
+
+            rowString += valString;
+        }
+            
+        print(rowString);
+
+        int count = 0;
+        string newRowString = "";
+        foreach (char val in rowString) {
+            if (val == '0') {
+                count += 1;
+            }
+            else {
+                newRowString += count.ToString();
+                count = 0;
+            }
+            
+            newRowString += val;
+        }
+
+        newRowString += count.ToString();
+        newRowString = newRowString.Replace("0", "");
+        outputFEN += newRowString + "/";
+    }
+
+    string[] FENStrings = FENString.Split(" ");
+    FENStrings[0] = outputFEN;
+    FENString = string.Join(" ", FENStrings);
+}
+
+
+public int[] getRow(int[,] array, int rowIndex) {
+    int[] row = new int[array.GetLength(1)];
+
+    for (int col = 0; col < array.GetLength(1); col++) {
+        row[col] = array[col, rowIndex];
+    }
+
+    return row;
+}
+
+
 public void populateBoard() { 
     int pieceBankIndex = 0;
 

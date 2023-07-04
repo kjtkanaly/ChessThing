@@ -74,6 +74,36 @@ public static ChessPiece.Type getPieceTypeFromInt(int pieceTypeValue)
 }
 
 
+public static string getPieceLetterFromValue(int pieceVal) {
+    // Defualt
+    if (pieceVal == 0) {
+        return "0";
+    }
+
+    Type pieceType = getPieceTypeFromInt(pieceVal);
+    Color pieceColor = getPieceColorFromInt(pieceVal);
+    string pieceLetter = "";
+
+    string[] pieceLetters = {"K", "P", "N", "B", "R", "Q"};
+    Type[] pieceTypes = {Type.King, Type.Pawn, Type.Knight, 
+                         Type.Bishop, Type.Rook, Type.Queen};
+
+    for (int i = 0; i < pieceTypes.Length; i++) {
+        if (pieceType == pieceTypes[i]) {
+            pieceLetter += pieceLetters[i];
+            break;
+        }
+    }
+
+    // Team Check
+    if (pieceColor == Color.Black) {
+        pieceLetter = pieceLetter.ToLower();
+    }
+
+    return pieceLetter;
+}
+
+
 public static void setPieceSprite(GameObject piece, ChessPiece pieceInfo)
 {
     MainGameDriver GameDrive = 
@@ -312,6 +342,9 @@ void OnMouseDown()
 
 
 public void movingPiece(bool newSpot, Vector2Int movePos) {
+    // Update the mini board
+    mainGameDriver.updateMiniBoard(movePos.x, movePos.y, value);
+
     if (newSpot) {
         // Destroy any piece on the new spot
         removeImpedingPiece(movePos.x, movePos.y);
@@ -333,6 +366,9 @@ public void movingPiece(bool newSpot, Vector2Int movePos) {
         // Log if piece is pawn that is now EnPassing
         checkIfEnPassing(movePos);
 
+        // Update the board section of the FEN string
+        mainGameDriver.convertBoardToString();
+
         // Update the active color in the FEN String
         mainGameDriver.iterateActiveColor(color);
 
@@ -345,9 +381,6 @@ public void movingPiece(bool newSpot, Vector2Int movePos) {
 
     // Set the object's sprite back to the normal layer
     pieceSprite.sortingOrder = mainGameDriver.normalSpriteLayer;
-
-    // Update the mini board
-    mainGameDriver.updateMiniBoard(movePos.x, movePos.y, value);
 
     // Update this piece's pos
     pos = new Vector2Int(movePos.x, movePos.y);
