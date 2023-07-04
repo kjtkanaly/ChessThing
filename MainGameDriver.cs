@@ -214,65 +214,42 @@ public void logPieceEnPassing(bool enPassing, Vector2Int movePos) {
 
 public void checkRooksAndKings()
 {
-    // Check if the rooks have moved
-    int tgtIndex = 0;
-    string[] targetStrs = {"Q", "K", "q", "k"};
+    string[] FENs = FENString.Split(" ");
+    string blackCastle = FENs[0].Split("/")[0];
+    string whiteCastle = FENs[0].Split("/")[7];
+    int[] cols = {0, 4, 7};
 
-    for (int row = 0; row < 8; row += 7) {   
-        for (int col = 0; col < 8; col += 7) {
-            int posValue = miniGameBoard[col, row];
-            ChessPiece.Type posType = ChessPiece.getPieceTypeFromInt(posValue);
-
-            if (posType != ChessPiece.Type.Rook) {
-                voidCastleFENString(targetStrs[tgtIndex]);
-            }
-
-            tgtIndex++;
-        }
+    // Black Castle Check
+    string ctle = "";
+    foreach (int col in cols) {
+        ctle += blackCastle[col];
     }
 
-    // Check if the kings have moved
-    for (int row = 0; row < 8; row += 7) {
-        int col = 4;
-
-        int posValue = miniGameBoard[col, row];
-        ChessPiece.Type posType = ChessPiece.getPieceTypeFromInt(posValue);
-
-        if (posType != ChessPiece.Type.King) {
-            string[] target = new string[2];
-
-            if (row == 0) {
-                target[0] = "K";
-                target[1] = "Q";
-            }
-            else {
-                target[0] = "k";
-                target[1] = "q";
-            }
-
-            voidCastleFENString(target);
-        }
+    if (ctle.Substring(0, 2) != "rk") {
+        FENs[2] = FENs[2].Replace("q", "");
     }
-}
-
-
-public void voidCastleFENString(string[] targets) {
-    for (int i = 0; i < targets.Length; i++) {
-        voidCastleFENString(targets[i]);
-    }
-}
-
-
-public void voidCastleFENString(string target) {
-    string[] FENStrings = FENString.Split(" ");
-
-    FENStrings[2] = FENStrings[2].Replace(target, "");
-
-    if (FENStrings[2] == "") {
-        FENStrings[2] = "-";
+    if (ctle.Substring(1, 2) != "kr") {
+        FENs[2] = FENs[2].Replace("k", "");
     }
 
-    FENString = string.Join(" ", FENStrings);
+    // White Castle Check
+    ctle = "";
+    foreach (int col in cols) {
+        ctle += whiteCastle[col];
+    }
+
+    if (ctle.Substring(0, 2) != "RK") {
+        FENs[2] = FENs[2].Replace("Q", "");
+    }
+    if (ctle.Substring(1, 2) != "KR") {
+        FENs[2] = FENs[2].Replace("K", "");
+    }
+    
+    if (FENs[2] == "") {
+        FENs[2] = "-";
+    }
+
+    FENString = string.Join(" ", FENs);
 }
 
 
