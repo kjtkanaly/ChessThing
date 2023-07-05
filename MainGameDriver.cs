@@ -12,6 +12,7 @@ public List<GameMoves> gameMoves;
 public Sprite[] WhiteSpriteList, BlackSpriteList;
 public List<int> pieceTexturePositions;
 public int[,] miniGameBoard;
+public Vector2Int[,] boardPosMap = new Vector2Int[8, 8];
 public bool aPieceIsSelected = false;
 public int normalSpriteLayer = 50;
 public int selectedSpriteLayer = 60;
@@ -48,6 +49,7 @@ void Start()
 
     calcBoardPositions(chessBoard.textureSize.x / 16, 
                        chessBoard.textureSize.x / 8);
+    createBoardPosMap();
     
     initChessGameObjects();
 
@@ -70,6 +72,17 @@ public void calcBoardPositions(int center, int spacing)
     for (int i = -4; i < 4; i++)
     {
         pieceTexturePositions.Add(center + (i * spacing));
+    }
+}
+
+
+public void createBoardPosMap() {
+    for (int row = 0; row < boardPosMap.GetLength(0); row++) {
+        for (int col = 0; col < boardPosMap.GetLength(1); col++) {
+            boardPosMap[col, row] = 
+                new Vector2Int(pieceTexturePositions[col],
+                               pieceTexturePositions[7 - row]);
+        }
     }
 }
 
@@ -103,22 +116,25 @@ public void DecodeFENString(string fenString) {
         }
 
         if (!System.Char.IsNumber(fenString, fenIndex)) {
-            row = (int)(boardIndex % 8);
+            row = 7 - (int)(boardIndex % 8);
             col = (int)(boardIndex / 8);
 
             // Convert Char to piece value
             miniGameBoard[row, col] = 
                 ChessPiece.getPieceValue(fenString[fenIndex]);
             boardIndex += 1;
+
+            print((row, col, miniGameBoard[row, col], fenString[fenIndex]));
         }
         else {
             boardIndex += int.Parse("" + fenString[fenIndex]);
         }
     }
 
+    /*
     if (playerColor == ChessPiece.Color.White) {
         miniGameBoard = General.vertVlipArray(miniGameBoard);
-    }
+    }/**/
 }
 
 
@@ -176,11 +192,13 @@ public int[] getRow(int[,] array, int rowIndex) {
 public void populateBoard() { 
     int pieceBankIndex = 0;
 
-    for (int row = miniGameBoard.GetLength(0) - 1; row >= 0; row--) {
+    for (int row = 0; row < miniGameBoard.GetLength(0); row++) {
 
         for (int col = 0; col < miniGameBoard.GetLength(1); col++) {
 
             if (miniGameBoard[col, row] > 0) {   
+                print((col, row, miniGameBoard[col, row]));
+
                 activatePiece(pieceBankIndex, 
                               miniGameBoard[col, row], 
                               new Vector2Int(col, row)
@@ -203,8 +221,8 @@ public void activatePiece(int pieceIndex, int pieceVal, Vector2Int piecePos) {
 
     // Move the object to the texture position
     chessPiece.transform.position = new Vector3(
-        pieceTexturePositions[pieceInfo.pos.x], 
-        pieceTexturePositions[pieceInfo.pos.y]);
+        boardPosMap[pieceInfo.pos.x, pieceInfo.pos.y].x, 
+        boardPosMap[pieceInfo.pos.x, pieceInfo.pos.y].y);
 
     // Set the piece's appropriate sprite
     ChessPiece.setPieceSprite(chessPiece, 
@@ -389,25 +407,26 @@ public ChessPiece getPieceAtPos(Vector2Int pos)
 // Debug Code
 
 // Prints the Mini Board to the terminal
-public void debugMiniBoard()
-{
-    string boardString = "-------------------------\n";
+public void debugMiniBoard() {
+    string[] boardString = new string[8];
 
-    for (int row = miniGameBoard.GetLength(0) - 1; row >= 0; row--)
+    for (int row = 0; row < miniGameBoard.GetLength(0); row++)
     {
         for (int col = 0; col < miniGameBoard.GetLength(1); col++)
         {   
             if (miniGameBoard[col, row] == 0)
             {
-                boardString += "  ";
+                boardString[row] += " ";
             }
-            boardString += miniGameBoard[col, row].ToString() + ", ";
+            boardString[row] += miniGameBoard[col, row].ToString() + ",";
         }
 
-        boardString += "\n";
+        boardString[row] += "\n";
     }
-    boardString += "-------------------------";
 
-    print(boardString);
+    string printString = string.Join("", boardString);
+
+    print(printString);
 }
+
 }
