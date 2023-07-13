@@ -45,13 +45,15 @@ void Start()
     FENString = 
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-    chessBoard.initChessBoard();
-
     calcBoardPositions(chessBoard.textureSize.x / 16, 
                        chessBoard.textureSize.x / 8);
     createBoardPosMap();
-    
+
+    chessBoard.initChessBoard();
     initChessGameObjects();
+
+    // Test Board
+    chessBoard.txtTest();
 
     miniGameBoard = new int[8, 8];
 
@@ -116,25 +118,18 @@ public void DecodeFENString(string fenString) {
         }
 
         if (!System.Char.IsNumber(fenString, fenIndex)) {
-            row = 7 - (int)(boardIndex % 8);
+            row = (int)(boardIndex % 8);
             col = (int)(boardIndex / 8);
 
             // Convert Char to piece value
             miniGameBoard[row, col] = 
                 ChessPiece.getPieceValue(fenString[fenIndex]);
             boardIndex += 1;
-
-            print((row, col, miniGameBoard[row, col], fenString[fenIndex]));
         }
         else {
             boardIndex += int.Parse("" + fenString[fenIndex]);
         }
     }
-
-    /*
-    if (playerColor == ChessPiece.Color.White) {
-        miniGameBoard = General.vertVlipArray(miniGameBoard);
-    }/**/
 }
 
 
@@ -150,8 +145,6 @@ public void convertBoardToString(){
 
             rowString += valString;
         }
-            
-        print(rowString);
 
         int count = 0;
         string newRowString = "";
@@ -197,8 +190,6 @@ public void populateBoard() {
         for (int col = 0; col < miniGameBoard.GetLength(1); col++) {
 
             if (miniGameBoard[col, row] > 0) {   
-                print((col, row, miniGameBoard[col, row]));
-
                 activatePiece(pieceBankIndex, 
                               miniGameBoard[col, row], 
                               new Vector2Int(col, row)
