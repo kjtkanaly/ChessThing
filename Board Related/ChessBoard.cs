@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,11 +9,14 @@ public class ChessBoard : MonoBehaviour
 public MainGameDriver mainGameDriver;
 public Texture2D boardTexture;
 public Vector2Int textureSize = new Vector2Int(440, 440);
+public Vector2Int textureGlobalPos = new Vector2Int(0, 0);
 public Color DarkSpaceColor = new Color(118, 150, 86);
 public Color LightSpaceColor = new Color(238, 238, 210);
 public Color highlightDarkSpaceColor = new Color(1, 1, 1);
 public Color highlightLightSpaceColor = new Color(1, 1, 1);
 public List<BoardSpace> boardSpots = new List<BoardSpace>();
+public int[] globalColPos = new int[8];
+public int[] globalRowPos = new int[8];
 
 public enum SpaceColor
 {
@@ -23,29 +27,21 @@ public enum SpaceColor
 // Board spot struct
 public struct BoardSpace
 {
-    public Vector2Int bottomLeftCorner, topRightCorner;
+    public Vector2Int bottomLeftCorner, topRightCorner, globalCenter;
     public Color normalColor, highlightColor;
     public SpaceColor color;
 
     public BoardSpace(Vector2Int bottomLeftCorner, Vector2Int topRightCorner,
-                        Color normalColor, Color highlightColor, SpaceColor color)
+                      Vector2Int globalCenter, Color normalColor, 
+                      Color highlightColor, SpaceColor color)
     {
         this.bottomLeftCorner = bottomLeftCorner;
         this.topRightCorner = topRightCorner;
+        this.globalCenter = globalCenter;
         this.normalColor = normalColor;
         this.highlightColor = highlightColor;
         this.color = color;
     }
-}
-
-public void txtTest() {
-    for (int row = 0; row <= boardTexture.height/8; row++) {
-        for (int col = 0; col <= boardTexture.width/8; col++) {
-            boardTexture.SetPixel(col, row, Color.red);
-        }
-    }
-
-    boardTexture.Apply();
 }
 
 public void initChessBoard()
@@ -60,14 +56,36 @@ public void initChessBoard()
     paintTheBoardSpacesDefault();
 }
 
-public void defineBoardSpots()
-{
+
+public int[] createPosArray(int spaceDistance, int spacePosOffset) {
+    int spaceCenter = spaceDistance / 2;
+    int spaceCount = 8;
+    int[] posArray = new int[spaceCount];
+
+    for (int i = 0; i < spaceCount; i++) {
+        posArray[i] = spaceCenter + (spaceDistance * i) - spacePosOffset;
+    }
+
+    return posArray;
+}
+
+
+public void defineBoardSpots() {
     int spaceWidth = boardTexture.width / 8;
     int spaceHeight = boardTexture.height / 8;
     int spaceWidthCenter = spaceWidth / 2;
     int spaceHeightCenter = spaceHeight / 2;
+    
+    Vector2Int globalPosOffset = new Vector2Int(
+                                     (textureSize.x / 2) - (textureGlobalPos.x),
+                                     (textureSize.y / 2) - (textureGlobalPos.y)
+                                     );
 
-    Vector2Int[,] boardPosMap = mainGameDriver.boardPosMap;
+    globalColPos = createPosArray(spaceWidth, globalPosOffset.x);
+    globalRowPos = createPosArray(spaceHeight, globalPosOffset.y);
+    Array.Reverse(globalRowPos);
+    
+    print(globalRowPos);
  
     for (int row = 7; row >= 0; row--)
     {
@@ -77,6 +95,11 @@ public void defineBoardSpots()
                                          spaceWidthCenter + (spaceWidth * col),
                                          spaceHeightCenter + (spaceHeight * row)
                                          );
+
+            Vector2Int globalCenter = new Vector2Int(
+                                          globalColPos[col],
+                                          globalRowPos[row]
+                                          );
 
             Vector2Int bottomLeftCorner = new Vector2Int(
                                                 spaceWidth * col,
@@ -106,10 +129,12 @@ public void defineBoardSpots()
             }
 
             BoardSpace newBoardSpot = new BoardSpace(bottomLeftCorner, 
-                                                    topRightCorner,
-                                                    normalColor, 
-                                                    highlightColor,
-                                                    spaceColor);
+                                                     topRightCorner,
+                                                     globalCenter,
+                                                     normalColor, 
+                                                     highlightColor,
+                                                     spaceColor
+                                                     );
 
             boardSpots.Add(newBoardSpot);
         }
@@ -141,8 +166,6 @@ public void highlightBoardSpace(BoardSpace boardSpace)
     Vector2Int bottomLeft = boardSpace.bottomLeftCorner;
     Vector2Int topRight = boardSpace.topRightCorner;
     Color highlightColor = boardSpace.highlightColor;
-
-    print((bottomLeft, topRight));
 
     for (int y = bottomLeft.y; y <= topRight.y; y++)
     {
@@ -179,10 +202,25 @@ public void highlightPossibleMoves(List<Vector2Int> possibleMoves)
     {
         int spaceIndex = possibleMoves[i].y * 8 + possibleMoves[i].x;
         BoardSpace boardSpace = boardSpots[spaceIndex];
-        print((possibleMoves[i], 
-               boardSpace.bottomLeftCorner,
-               boardSpace.topRightCorner));
         highlightBoardSpace(boardSpace);
     }
 }
+
+
+public int getPosIndexNearestPos(float pos, int[] posArray)
+{
+    int closeIndex = 0;
+
+    for (int i = 1; i < posArray.Length; i++)
+    {   
+        if (Mathf.Abs(pos - posArray[i]) < Mathf.Abs(pos - posArray[closeIndex]))
+        {
+            closeIndex = i;
+        }
+    }
+
+    return closeIndex;
+}
+
+
 }

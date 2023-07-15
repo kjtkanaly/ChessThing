@@ -6,6 +6,7 @@ public class ChessPiece : MonoBehaviour
 {
 public MainGameDriver mainGameDriver;
 public ChessBoard chessBoard;
+public FEN fen;
 public SpriteRenderer pieceSprite;
 public Type type;
 public Color color;
@@ -158,8 +159,9 @@ public void snapPieceToGrid(int posXIndex, int posYIndex)
 {
     Vector3 currentPosition = this.transform.position;
 
-    currentPosition.x = mainGameDriver.pieceTexturePositions[posXIndex];
-    currentPosition.y = mainGameDriver.pieceTexturePositions[posYIndex];
+    int boardPosIndex = posXIndex * 8 + posYIndex;
+    currentPosition.x = chessBoard.boardSpots[boardPosIndex].globalCenter.x;
+    currentPosition.y = chessBoard.boardSpots[boardPosIndex].globalCenter.y;
 
     this.transform.position = currentPosition;
 }
@@ -294,7 +296,7 @@ void OnMouseDown()
     if (!mainGameDriver.aPieceIsSelected)
     {
         // Check if it is the piece's team's turn
-        if (mainGameDriver.getActiveColor() != color) {
+        if (fen.getActiveColor() != color) {
             return;
         }
 
@@ -320,8 +322,17 @@ void OnMouseDown()
     {
         // Handle the placement of the piece
         Vector3 thisPosition = this.transform.position;
-        int gridX =  mainGameDriver.getPosIndexNearestPos(thisPosition.x);
-        int gridY =  mainGameDriver.getPosIndexNearestPos(thisPosition.y);
+        int gridX = chessBoard.getPosIndexNearestPos(
+                        thisPosition.x,
+                        chessBoard.globalColPos
+                        );
+        int gridY = chessBoard.getPosIndexNearestPos(
+                        thisPosition.y,
+                        chessBoard.globalRowPos
+                        );
+
+        // Debug
+        print((gridY, gridX));
 
         // Check if the closes grid positions are valid moves
         for (int i = 0; i < possibleMoves.Count; i++)
@@ -367,16 +378,16 @@ public void movingPiece(bool newSpot, Vector2Int movePos) {
         checkIfEnPassing(movePos);
 
         // Update the board section of the FEN string
-        mainGameDriver.convertBoardToString();
+        mainGameDriver.fen.convertBoardToString();
 
         // Update the active color in the FEN String
-        mainGameDriver.iterateActiveColor(color);
+        fen.iterateActiveColor(color);
 
         // Check for appropriate updates to the castling log in FEN string
-        mainGameDriver.checkRooksAndKings();
+        fen.checkRooksAndKings();
 
         // Debug
-        print(mainGameDriver.FENString);
+        print(fen.FENString);
     }
 
     // Set the object's sprite back to the normal layer
@@ -403,7 +414,7 @@ public void checkIfEnPassing(Vector2Int movePos) {
         enPassingCheck = true;
     }
 
-    mainGameDriver.logPieceEnPassing(enPassingCheck, movePos);
+    fen.logPieceEnPassing(enPassingCheck, movePos);
 
     return;
 }
