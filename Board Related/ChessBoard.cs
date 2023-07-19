@@ -60,8 +60,8 @@ public class ChessBoard : MonoBehaviour
         defineTextureSpacesMatrix();
 
         // Debug - Pain one space
-        // paintOneBoardSpace(new Vector2Int(0, 7));
-        // paintOneBoardSpace(new Vector2Int(1, 7));
+        // paintOneBoardSpace(new Vector2Int(6, 0));
+        // paintOneBoardSpace(new Vector2Int(6, 7));
 
         // Update the image texture to reflect the now defined spots
         paintTheBoardSpacesDefault();
@@ -121,11 +121,11 @@ public class ChessBoard : MonoBehaviour
                 Vector2Int topRight = boardSpots[spaceX, spaceY].topRightCorner;
                 Color textureColor = boardSpots[spaceX, spaceY].normalColor;
 
-                for (int row = bottomLeft.y; row <= topRight.y; row++)
+                for (int y = bottomLeft.y; y < topRight.y; y++)
                 {
-                    for (int col = bottomLeft.x; col <= topRight.x; col++)
+                    for (int x = bottomLeft.x; x < topRight.x; x++)
                     {
-                        boardTexture.SetPixel(row, col, textureColor);
+                        boardTexture.SetPixel(x, y, textureColor);
                     }
                 }
             }
