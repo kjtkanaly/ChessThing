@@ -38,6 +38,9 @@ public struct GameMoves
     }
 }
 
+// -----------------------------------------------------------------------------
+// Game Events
+
 void Start()
 {
     // Setup Board Array using FEN String
@@ -61,17 +64,8 @@ void Start()
     /**/
 }
 
-public List<int> calcBoardPositions(int center, int spacing)
-{
-    List<int> boardPositions = new List<int>();
-
-    for (int i = -4; i < 4; i++)
-    {
-        boardPositions.Add(center + (i * spacing));
-    }
-
-    return boardPositions;
-}
+// -----------------------------------------------------------------------------
+// Main Functions
 
 public void initChessGameObjects()
 {

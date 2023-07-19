@@ -399,7 +399,7 @@ public void movingPiece(bool newSpot, Vector2Int movePos) {
     snapPieceToGrid(movePos.x, movePos.y);
 
     // Dehighlight the possible moves
-    chessBoard.paintTheBoardSpacesDefault();
+    chessBoard.paintTheBoardSpaces();
 
     // Log that we are no longer holding a piece
     isSelected = false;

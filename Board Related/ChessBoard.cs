@@ -16,13 +16,14 @@ public class ChessBoard : MonoBehaviour
     public Vector2Int textureWorldPos = new Vector2Int(0, 0);
     private Color DarkSpaceColor = new Color(118, 150, 86, 255);
     private Color LightSpaceColor = new Color(238, 238, 210, 255);
-    private Color highlightDarkSpaceColor = new Color(1, 1, 1);
-    private Color highlightLightSpaceColor = new Color(1, 1, 1);
+    private Color DarkSpaceHighlightColor = new Color(232, 80, 70, 255);
+    private Color LightSpaceHighlightColor = new Color(184, 63, 55, 255);
     public BoardSpace[,] boardSpots = new BoardSpace[8,8];
 
     // Type
     public int[] worldXPos = new int[8];
     public int[] worldYPos = new int[8];
+    public bool debugMode = false;
 
     // Board spot struct
     public struct BoardSpace {
@@ -40,6 +41,36 @@ public class ChessBoard : MonoBehaviour
         }
     }
 
+    // -------------------------------------------------------------------------
+    // Game Events
+
+    void Update() {
+        if (!debugMode) {
+            return;
+        }
+
+        if (Input.GetMouseButtonDown(0)) {
+            Vector3 mousePos = Input.mousePosition;
+            mousePos.z = 0;
+            Vector3 mouseWrldPos = Camera.main.ScreenToWorldPoint(mousePos);
+
+            // Find the closest space index
+            Vector2Int spaceCord = getSpaceCordNearPos(new Vector2(mouseWrldPos.x, 
+                                                                mouseWrldPos.y
+                                                                ));
+
+            print((spaceCord.x, spaceCord.y));
+            highlightBoardSpace(spaceCord);
+        }
+
+        if (Input.GetKeyDown(KeyCode.A)) {
+            dehighlightAllBoardSpaces();
+        }
+    }
+
+    // -----------------------------------------------------------------------------
+    // Board Related Functions
+
     public void initChessBoard() {
         // Create the board texture
         boardTexture = new Texture2D(initTextureSize.x, initTextureSize.y);
@@ -50,6 +81,8 @@ public class ChessBoard : MonoBehaviour
         // Normalize the texture colors
         DarkSpaceColor = DarkSpaceColor / 255;
         LightSpaceColor = LightSpaceColor / 255;
+        DarkSpaceHighlightColor = DarkSpaceHighlightColor / 255;
+        LightSpaceHighlightColor = LightSpaceHighlightColor / 255;
 
         // Create the X and Y World Position Arrays
         worldXPos = createPosArray(boardTexture.width / 8);
@@ -64,7 +97,7 @@ public class ChessBoard : MonoBehaviour
         // paintOneBoardSpace(new Vector2Int(6, 7));
 
         // Update the image texture to reflect the now defined spots
-        paintTheBoardSpacesDefault();
+        paintTheBoardSpaces();
     }
 
 
@@ -95,11 +128,11 @@ public class ChessBoard : MonoBehaviour
                                                            );
 
                 Color normalColor = LightSpaceColor;
-                Color highlightColor = highlightLightSpaceColor;
+                Color highlightColor = LightSpaceHighlightColor;
 
                 if ((y + x) % 2 == 0) {
                     normalColor = DarkSpaceColor;
-                    highlightColor = highlightDarkSpaceColor;
+                    highlightColor = DarkSpaceHighlightColor;
                 }
 
                 BoardSpace newBoardSpot = new BoardSpace(bottomLeftCorner, 
@@ -113,7 +146,7 @@ public class ChessBoard : MonoBehaviour
         }
     }
 
-    public void paintTheBoardSpacesDefault()
+    public void paintTheBoardSpaces()
     {
         for (int spaceX = 0; spaceX < 8; spaceX++) {
             for (int spaceY = 0; spaceY < 8; spaceY++) {
@@ -134,15 +167,46 @@ public class ChessBoard : MonoBehaviour
         boardTexture.Apply();
     }
 
+    public Vector2Int getSpaceCordNearPos(Vector2 pos) {
+        Vector2Int spaceCord = new Vector2Int(0, 0);
+
+        // Find the closest X Cord
+        spaceCord.x = getIndexNearestPos(pos.x, worldXPos);
+
+        // Find the closest Y Cord
+        spaceCord.y = getIndexNearestPos(pos.y, worldYPos);
+
+        return spaceCord;
+    }
+
+    public int getIndexNearestPos(float pos, int[] posArray)
+    {
+        int index = 0;
+
+        for (int i = 1; i < posArray.Length; i++)
+        {   
+            if (Mathf.Abs(pos - posArray[i]) < Mathf.Abs(pos - posArray[index]))
+            {
+                index = i;
+            }
+        }
+
+        return index;
+    }
+
+    public void highlightBoardSpace(Vector2Int cord) {
+        highlightBoardSpace(boardSpots[cord.x, cord.y]);
+    }
+
     public void highlightBoardSpace(BoardSpace boardSpace)
     {
         Vector2Int bottomLeft = boardSpace.bottomLeftCorner;
         Vector2Int topRight = boardSpace.topRightCorner;
         Color highlightColor = boardSpace.highlightColor;
 
-        for (int y = bottomLeft.y; y <= topRight.y; y++)
+        for (int y = bottomLeft.y; y < topRight.y; y++)
         {
-            for (int x = bottomLeft.x; x <= topRight.x; x++)
+            for (int x = bottomLeft.x; x < topRight.x; x++)
             {
                 boardTexture.SetPixel(x, y, highlightColor);
             }
@@ -150,6 +214,14 @@ public class ChessBoard : MonoBehaviour
 
         boardTexture.Apply();
     }
+
+    public void dehighlightAllBoardSpaces()
+    {
+        paintTheBoardSpaces();
+    }
+
+    // -------------------------------------------------------------------------
+    // Old Functions
 
     public void dehighlightBoardSpace(BoardSpace boardSpace)
     {
@@ -179,20 +251,19 @@ public class ChessBoard : MonoBehaviour
         }
     }
 
-
     public int getPosIndexNearestPos(float pos, int[] posArray)
     {
-        int closeIndex = 0;
+        int index = 0;
 
         for (int i = 1; i < posArray.Length; i++)
         {   
-            if (Mathf.Abs(pos - posArray[i]) < Mathf.Abs(pos - posArray[closeIndex]))
+            if (Mathf.Abs(pos - posArray[i]) < Mathf.Abs(pos - posArray[index]))
             {
-                closeIndex = i;
+                index = i;
             }
         }
 
-        return closeIndex;
+        return index;
     }
 
     //--------------------------------------------------------------------------
