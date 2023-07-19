@@ -9,7 +9,7 @@ public class FEN : MonoBehaviour
     
     // Types
     public string FENString;
-    private string startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    const string startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     const string colCord = "abcdefgh";
     const string rowCord = "12345678";
     public int[,] grid = new int[8, 8];

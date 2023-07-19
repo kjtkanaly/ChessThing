@@ -160,8 +160,8 @@ public void snapPieceToGrid(int posXIndex, int posYIndex)
     Vector3 currentPosition = this.transform.position;
 
     int boardPosIndex = posXIndex * 8 + posYIndex;
-    currentPosition.x = chessBoard.boardSpots[boardPosIndex].globalCenter.x;
-    currentPosition.y = chessBoard.boardSpots[boardPosIndex].globalCenter.y;
+    currentPosition.x = chessBoard.worldXPos[posXIndex];
+    currentPosition.y = chessBoard.worldYPos[posYIndex];
 
     this.transform.position = currentPosition;
 }
@@ -324,11 +324,11 @@ void OnMouseDown()
         Vector3 thisPosition = this.transform.position;
         int gridX = chessBoard.getPosIndexNearestPos(
                         thisPosition.x,
-                        chessBoard.globalColPos
+                        chessBoard.worldXPos
                         );
         int gridY = chessBoard.getPosIndexNearestPos(
                         thisPosition.y,
-                        chessBoard.globalRowPos
+                        chessBoard.worldYPos
                         );
 
         // Debug

@@ -40,11 +40,14 @@ public struct GameMoves
 
 void Start()
 {
+    // Setup Board Array using FEN String
     fen = this.GetComponent<FEN>();
     fen.DecodeFENString(fen.FENString);
+    
+    // Setup the Board image
+    chessBoard.initChessBoard();
 
     /*
-    chessBoard.initChessBoard();
     initChessGameObjects();
 
     miniGameBoard = new int[8, 8];
@@ -123,8 +126,9 @@ public void activatePiece(int pieceIndex, int pieceVal, Vector2Int piecePos) {
                              piecePos);
 
     // Move the object to the texture position
-    Vector2Int boardPos = 
-        chessBoard.boardSpots[piecePos.y * 8 + piecePos.x].globalCenter;
+    Vector2Int boardPos = new Vector2Int(chessBoard.worldXPos[piecePos.x],
+                                         chessBoard.worldYPos[piecePos.y]
+                                         );
     chessPiece.transform.position = new Vector3(boardPos.x, boardPos.y);
 
     // Set the piece's appropriate sprite
