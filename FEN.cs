@@ -60,7 +60,7 @@ public class FEN : MonoBehaviour
             string rowString = "";
 
             foreach (int val in rowValues) {
-                string valString = ChessPiece.getPieceLetterFromValue(val);
+                string valString = CPM.getPieceLetterFromValue(val);
 
                 rowString += valString;
             }
@@ -102,27 +102,27 @@ public class FEN : MonoBehaviour
     // -------------------------------------------------------------------------
     // Old Functions
 
-    public ChessPiece.Color getActiveColor() {
-        ChessPiece.Color activeColor;
+    public ChessPieceMaster.Color getActiveColor() {
+        ChessPieceMaster.Color activeColor;
 
         string colorString = FENString.Split(' ')[1];
 
         if (colorString.ToLower() == "w") {
-            activeColor = ChessPiece.Color.White;
+            activeColor = ChessPieceMaster.Color.White;
         } 
         else {
-            activeColor = ChessPiece.Color.Black;
+            activeColor = ChessPieceMaster.Color.Black;
         }
 
         return activeColor;
     }
 
 
-    public void iterateActiveColor(ChessPiece.Color oldColor) {
+    public void iterateActiveColor(ChessPieceMaster.Color oldColor) {
 
         string[] FENStrings = FENString.Split(" ");
 
-        if (oldColor == ChessPiece.Color.White) {
+        if (oldColor == ChessPieceMaster.Color.White) {
             FENString = FENStrings[1] = "b";
         }
         else {

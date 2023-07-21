@@ -21,13 +21,34 @@ public class ChessPieceMaster : MonoBehaviour
     private const string pieceChars = "kpnbrq";
 
     // -------------------------------------------------------------------------
+    // Chess Piece Enums
+
+    public enum Type
+    {
+        Null = 0,
+        King = 1,
+        Pawn = 2,
+        Knight = 3,
+        Bishop = 4,
+        Rook = 5,
+        Queen = 6
+    }
+
+    public enum Color
+    {
+        Null = 0,
+        White = 8,
+        Black = 16
+    }
+
+    // -------------------------------------------------------------------------
     // Game Events
     void Start() {
         CB = this.GetComponent<ChessBoard>();
     }
 
     // -------------------------------------------------------------------------
-    // Piece Related Methods
+    // Master Piece Related Methods
     public void createChessObjects(int objectCount) {
         chessPieceArray = new ChessPiece[objectCount];
 
@@ -53,6 +74,7 @@ public class ChessPieceMaster : MonoBehaviour
                                           grid[x, y], 
                                           new Vector2Int(x, y)
                                           );
+                    activateAllPieces(chessPieceArray[pieceIndex]);
 
                     pieceIndex += 1;
                 }
@@ -72,7 +94,9 @@ public class ChessPieceMaster : MonoBehaviour
 
         // Set the piece's appropriate sprite
         setPieceSprite(piece);
+    }
 
+    public void activateAllPieces(ChessPiece piece) {
         // Finally, activate the piece's gameobject
         piece.gameObject.SetActive(true);
     }
@@ -80,7 +104,7 @@ public class ChessPieceMaster : MonoBehaviour
     public void setPieceSprite(ChessPiece piece) {
         SpriteRenderer pieceSR = piece.GetComponent<SpriteRenderer>();
         
-        if (piece.color == ChessPiece.Color.White) {
+        if (piece.color == Color.White) {
             pieceSR.sprite = WhiteSpriteList[(int)piece.type - 1];
         }
         else {
@@ -102,8 +126,8 @@ public class ChessPieceMaster : MonoBehaviour
     }
 
     public int getPieceValue(char pieceChar) {
-        int pieceValue = (int) ChessPiece.Type.Null 
-                          + (int) ChessPiece.Color.Null;
+        int pieceValue = (int) Type.Null 
+                          + (int) Color.Null;
 
         char pieceCharLower = char.ToLower(pieceChar);
 
@@ -115,11 +139,11 @@ public class ChessPieceMaster : MonoBehaviour
 
                 if (char.IsUpper(pieceChar))
                 {
-                    pieceValue += (int) ChessPiece.Color.White;
+                    pieceValue += (int) Color.White;
                 }
                 else
                 {
-                    pieceValue += (int) ChessPiece.Color.Black;
+                    pieceValue += (int) Color.Black;
                 }
 
                 break;
@@ -127,6 +151,67 @@ public class ChessPieceMaster : MonoBehaviour
         }
 
         return pieceValue;
+    }
+
+    public Color getPieceColorFromInt(int pieceColorValue)
+    {
+        Color pieceColor = Color.White;
+
+        if ((pieceColorValue - 8) > 6)
+        {
+            pieceColor = Color.Black;
+        }
+
+        return pieceColor;
+    }
+
+    public Type getPieceTypeFromInt(int pieceTypeValue)
+    {
+        while (pieceTypeValue > 6)
+        {
+            pieceTypeValue -= 8;
+        }
+        
+        return (Type)pieceTypeValue;
+    }
+
+    public string getPieceLetterFromValue(int pieceVal) {
+        // Defualt
+        if (pieceVal == 0) {
+            return "0";
+        }
+
+        Type pieceType = getPieceTypeFromInt(pieceVal);
+        Color pieceColor = getPieceColorFromInt(pieceVal);
+        string pieceLetter = "";
+
+        string[] pieceLetters = {"K", "P", "N", "B", "R", "Q"};
+        Type[] pieceTypes = {Type.King, Type.Pawn, Type.Knight, 
+                            Type.Bishop, Type.Rook, Type.Queen};
+
+        for (int i = 0; i < pieceTypes.Length; i++) {
+            if (pieceType == pieceTypes[i]) {
+                pieceLetter += pieceLetters[i];
+                break;
+            }
+        }
+
+        // Team Check
+        if (pieceColor == Color.Black) {
+            pieceLetter = pieceLetter.ToLower();
+        }
+
+        return pieceLetter;
+    }
+
+    public Color getEnemyColor(Color allyColor)
+    {
+        if (allyColor == Color.White) {
+            return Color.Black;
+        }
+        else {
+            return Color.White;
+        }
     }
 
     //--------------------------------------------------------------------------
