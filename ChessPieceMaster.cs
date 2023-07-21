@@ -18,6 +18,7 @@ public class ChessPieceMaster : MonoBehaviour
     // Unity Types
 
     // Types
+    private const string pieceChars = "kpnbrq";
 
     // -------------------------------------------------------------------------
     // Game Events
@@ -87,8 +88,7 @@ public class ChessPieceMaster : MonoBehaviour
         }
     }
 
-    public void deactivateThePieceAtPos(Vector2Int pos)
-    {
+    public void deactivateThePieceAtPos(Vector2Int pos) {
         for (int i = 0; i < chessPieceArray.GetLength(0); i++)
         {
             Vector2Int piecePos = chessPieceArray[i].pos;
@@ -99,6 +99,34 @@ public class ChessPieceMaster : MonoBehaviour
                 chessPieceArray[i].pos = new Vector2Int(-1, -1);
             }
         }
+    }
+
+    public int getPieceValue(char pieceChar) {
+        int pieceValue = (int) ChessPiece.Type.Null 
+                          + (int) ChessPiece.Color.Null;
+
+        char pieceCharLower = char.ToLower(pieceChar);
+
+        for (int typeIndex = 0; typeIndex < pieceChars.Length; typeIndex++)
+        {
+            if (pieceCharLower == pieceChars[typeIndex])
+            {
+                pieceValue = 1 + typeIndex;
+
+                if (char.IsUpper(pieceChar))
+                {
+                    pieceValue += (int) ChessPiece.Color.White;
+                }
+                else
+                {
+                    pieceValue += (int) ChessPiece.Color.Black;
+                }
+
+                break;
+            }
+        }
+
+        return pieceValue;
     }
 
     //--------------------------------------------------------------------------

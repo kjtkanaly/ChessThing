@@ -5,28 +5,21 @@ using UnityEngine;
 public class ChessPiece : MonoBehaviour
 {
     // Objects
-    
+    private MainGameDriver mainGameDriver;
+    private ChessBoard chessBoard;
+    private FEN Fen;
+    private ChessPieceMaster CPM;
 
     // Unity Types
-
+    private SpriteRenderer pieceSprite;
+    private List<Vector2Int> possibleMoves;
+    public Vector2Int pos;
+    
     // Types
-
-private MainGameDriver mainGameDriver;
-private ChessBoard chessBoard;
-private FEN Fen;
-private ChessPieceMaster CPM;
-public SpriteRenderer pieceSprite;
-public Type type;
-public Color color;
-public Vector2Int pos;
-public Vector2Int enPassingPos;
-public List<Vector2Int> possibleMoves;
-public int value;
-public int movementCount;
-public bool enPassing;
-public bool canCastleRight;
-public bool canCastleLeft;
-public static string pieceChars = "kpnbrq";
+    public Type type;
+    public Color color;
+    public int value;
+    public int movementCount;   
 
 public void InitChessPiece(int value, Vector2Int posValue, MainGameDriver MGD)
 {
@@ -119,36 +112,6 @@ public static string getPieceLetterFromValue(int pieceVal) {
 }
 
 
-public static int getPieceValue(char pieceChar)
-{
-    int pieceValue = (int) ChessPiece.Type.Null +  
-                        (int) ChessPiece.Color.Null;
-
-    char pieceCharLower = char.ToLower(pieceChar);
-
-    for (int typeIndex = 0; typeIndex < pieceChars.Length; typeIndex++)
-    {
-        if (pieceCharLower == pieceChars[typeIndex])
-        {
-            pieceValue = 1 + typeIndex;
-
-            if (char.IsUpper(pieceChar))
-            {
-                pieceValue += (int) ChessPiece.Color.White;
-            }
-            else
-            {
-                pieceValue += (int) ChessPiece.Color.Black;
-            }
-
-            break;
-        }
-    }
-
-    return pieceValue;
-}
-
-
 public void snapPieceToGrid(int posXIndex, int posYIndex)
 {
     Vector3 currentPosition = this.transform.position;
@@ -166,21 +129,6 @@ public void removeImpedingPiece(Vector2Int pos)
     if (Fen.grid[pos.x, pos.y] > 0)
     {
         CPM.deactivateThePieceAtPos(pos);
-    }
-}
-
-
-public void removeEnpassingPiece()
-{
-    if (enPassing)
-    {
-        CPM.deactivateThePieceAtPos(enPassingPos);
-
-        // Update the mini board
-        // mainGameDriver.updateMiniBoard(enPassingPos.x, enPassingPos.y, 0);
-
-        enPassing = false;
-        enPassingPos = new Vector2Int(-1, -1);
     }
 }
 
@@ -260,9 +208,6 @@ void Start()
 
     pieceSprite = this.GetComponent<SpriteRenderer>();
 
-    enPassing = false;
-    canCastleLeft = false;
-    canCastleRight = false;
     movementCount = 0;
 
     if (mainGameDriver == null)
@@ -353,9 +298,6 @@ public void movingPiece(bool newSpot, Vector2Int movePos) {
         // Destroy any piece on the new spot
         removeImpedingPiece(movePos);
 
-        // Destory any enPassing Pieces
-        removeEnpassingPiece();
-
         // Log the move in the master list
         MainGameDriver.GameMoves gameMove; 
         gameMove = new MainGameDriver.GameMoves(this, 
@@ -366,9 +308,6 @@ public void movingPiece(bool newSpot, Vector2Int movePos) {
 
         // Log that this piece has now moved
         movementCount += 1;
-
-        // Log if piece is pawn that is now EnPassing
-        checkIfEnPassing(movePos);
 
         // Update the board section of the FEN string
         mainGameDriver.Fen.convertBoardToString();
@@ -397,19 +336,6 @@ public void movingPiece(bool newSpot, Vector2Int movePos) {
     // Log that we are no longer holding a piece
     isSelected = false;
     mainGameDriver.aPieceIsSelected = false;
-}
-
-
-public void checkIfEnPassing(Vector2Int movePos) {
-    bool enPassingCheck = false;
-
-    if ((type == Type.Pawn) && (Mathf.Abs(movePos.y - pos.y) == 2)) {
-        enPassingCheck = true;
-    }
-
-    Fen.logPieceEnPassing(enPassingCheck, movePos);
-
-    return;
 }
 
 

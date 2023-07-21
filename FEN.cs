@@ -5,7 +5,8 @@ using UnityEngine;
 public class FEN : MonoBehaviour
 {
     // Objects
-    private MainGameDriver MGD;
+    [SerializeField] private MainGameDriver MGD;
+    [SerializeField] private ChessPieceMaster CPM;
     
     // Types
     public string FENString;
@@ -18,8 +19,6 @@ public class FEN : MonoBehaviour
     // FEN Related Functions
 
     public void InitFenObj(MainGameDriver mainGameDriver) {
-        MGD = mainGameDriver;
-
         FENString = startingFEN;
     }
     
@@ -41,7 +40,7 @@ public class FEN : MonoBehaviour
                 x = (int)(boardIndex % 8);
 
                 // Convert Char to piece value
-                grid[x, y] = ChessPiece.getPieceValue(fenString[fenIndex]);
+                grid[x, y] = CPM.getPieceValue(fenString[fenIndex]);
                 boardIndex += 1;
             }
             else {
