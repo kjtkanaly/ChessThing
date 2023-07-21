@@ -59,7 +59,6 @@ public class ChessBoard : MonoBehaviour
                                                                 mouseWrldPos.y
                                                                 ));
 
-            print((spaceCord.x, spaceCord.y));
             highlightBoardSpace(spaceCord);
         }
 
@@ -127,12 +126,12 @@ public class ChessBoard : MonoBehaviour
                                                            spaceHeight * ((7 - y) + 1)
                                                            );
 
-                Color normalColor = LightSpaceColor;
-                Color highlightColor = LightSpaceHighlightColor;
+                Color normalColor = DarkSpaceColor;
+                Color highlightColor = DarkSpaceHighlightColor;
 
                 if ((y + x) % 2 == 0) {
-                    normalColor = DarkSpaceColor;
-                    highlightColor = DarkSpaceHighlightColor;
+                    normalColor = LightSpaceColor;
+                    highlightColor = LightSpaceHighlightColor;
                 }
 
                 BoardSpace newBoardSpot = new BoardSpace(bottomLeftCorner, 

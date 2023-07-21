@@ -4,9 +4,17 @@ using UnityEngine;
 
 public class ChessPiece : MonoBehaviour
 {
-public MainGameDriver mainGameDriver;
-public ChessBoard chessBoard;
-public FEN fen;
+    // Objects
+    
+
+    // Unity Types
+
+    // Types
+
+private MainGameDriver mainGameDriver;
+private ChessBoard chessBoard;
+private FEN Fen;
+private ChessPieceMaster CPM;
 public SpriteRenderer pieceSprite;
 public Type type;
 public Color color;
@@ -20,12 +28,18 @@ public bool canCastleRight;
 public bool canCastleLeft;
 public static string pieceChars = "kpnbrq";
 
-public void InitChessPiece(int value, 
-                           Vector2Int posValue)
+public void InitChessPiece(int value, Vector2Int posValue, MainGameDriver MGD)
 {
     Type type = getPieceTypeFromInt(value);
     Color color = getPieceColorFromInt(value);
 
+    // Piece Objects
+    this.mainGameDriver = MGD;
+    this.chessBoard = MGD.chessBoard;
+    this.Fen = MGD.Fen;
+    this.CPM = MGD.CPM;
+
+    // Piece Info
     this.value = value;
     this.type = type;
     this.color = color;
@@ -105,26 +119,6 @@ public static string getPieceLetterFromValue(int pieceVal) {
 }
 
 
-public static void setPieceSprite(GameObject piece, ChessPiece pieceInfo)
-{
-    MainGameDriver GameDrive = 
-        GameObject.FindGameObjectWithTag("Game Control").
-        GetComponent<MainGameDriver>();
-
-    SpriteRenderer pieceSR = piece.GetComponent<SpriteRenderer>();
-    
-    if (pieceInfo.color == ChessPiece.Color.White)
-    {
-        pieceSR.sprite = GameDrive.WhiteSpriteList[(int)pieceInfo.type - 1];
-    }
-
-    else
-    {
-        pieceSR.sprite = GameDrive.BlackSpriteList[(int)pieceInfo.type - 1];
-    }
-}
-
-
 public static int getPieceValue(char pieceChar)
 {
     int pieceValue = (int) ChessPiece.Type.Null +  
@@ -167,11 +161,11 @@ public void snapPieceToGrid(int posXIndex, int posYIndex)
 }
 
 
-public void removeImpedingPiece(int col, int row)
+public void removeImpedingPiece(Vector2Int pos)
 {
-    if (mainGameDriver.miniGameBoard[col, row] > 0)
+    if (Fen.grid[pos.x, pos.y] > 0)
     {
-        mainGameDriver.deactivateThePieceAtPos(col, row);
+        CPM.deactivateThePieceAtPos(pos);
     }
 }
 
@@ -180,11 +174,10 @@ public void removeEnpassingPiece()
 {
     if (enPassing)
     {
-        mainGameDriver.deactivateThePieceAtPos(enPassingPos.x, 
-                                               enPassingPos.y);
+        CPM.deactivateThePieceAtPos(enPassingPos);
 
         // Update the mini board
-        mainGameDriver.updateMiniBoard(enPassingPos.x, enPassingPos.y, 0);
+        // mainGameDriver.updateMiniBoard(enPassingPos.x, enPassingPos.y, 0);
 
         enPassing = false;
         enPassingPos = new Vector2Int(-1, -1);
@@ -207,7 +200,7 @@ public bool pieceCanBeKilled(int enemyValue)
 
 public bool checkIfAllyPiece(Vector2Int moveCords)
 {   
-    int tgtValue = mainGameDriver.miniGameBoard[moveCords.x, moveCords.y];
+    int tgtValue = Fen.grid[moveCords.x, moveCords.y];
 
     if (tgtValue == 0)
     {
@@ -296,7 +289,7 @@ void OnMouseDown()
     if (!mainGameDriver.aPieceIsSelected)
     {
         // Check if it is the piece's team's turn
-        if (fen.getActiveColor() != color) {
+        if (Fen.getActiveColor() != color) {
             return;
         }
 
@@ -308,10 +301,10 @@ void OnMouseDown()
         mainGameDriver.aPieceIsSelected = true;
 
         // Update the mini board
-        mainGameDriver.updateMiniBoard(pos.x, pos.y, 0);
+        // mainGameDriver.updateMiniBoard(pos.x, pos.y, 0);
 
         // Find the possible moves for the piece
-        possibleMoves = MovementLogic.gatherPossibleMoves(this);
+        // possibleMoves = MovementLogic.gatherPossibleMoves(this);
 
         // Highlight the possible moves
         chessBoard.highlightPossibleMoves(possibleMoves);
@@ -354,11 +347,11 @@ void OnMouseDown()
 
 public void movingPiece(bool newSpot, Vector2Int movePos) {
     // Update the mini board
-    mainGameDriver.updateMiniBoard(movePos.x, movePos.y, value);
+    // mainGameDriver.updateMiniBoard(movePos.x, movePos.y, value);
 
     if (newSpot) {
         // Destroy any piece on the new spot
-        removeImpedingPiece(movePos.x, movePos.y);
+        removeImpedingPiece(movePos);
 
         // Destory any enPassing Pieces
         removeEnpassingPiece();
@@ -378,16 +371,16 @@ public void movingPiece(bool newSpot, Vector2Int movePos) {
         checkIfEnPassing(movePos);
 
         // Update the board section of the FEN string
-        mainGameDriver.fen.convertBoardToString();
+        mainGameDriver.Fen.convertBoardToString();
 
         // Update the active color in the FEN String
-        fen.iterateActiveColor(color);
+        Fen.iterateActiveColor(color);
 
         // Check for appropriate updates to the castling log in FEN string
-        fen.checkRooksAndKings();
+        Fen.checkRooksAndKings();
 
         // Debug
-        print(fen.FENString);
+        print(Fen.FENString);
     }
 
     // Set the object's sprite back to the normal layer
@@ -414,7 +407,7 @@ public void checkIfEnPassing(Vector2Int movePos) {
         enPassingCheck = true;
     }
 
-    fen.logPieceEnPassing(enPassingCheck, movePos);
+    Fen.logPieceEnPassing(enPassingCheck, movePos);
 
     return;
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class Knight
 {
-    
+    /*
 public static List<Vector2Int> getPossibleKnightMoves(ChessPiece knightPiece)
 {
     List<Vector2Int> knightMoves = new List<Vector2Int>();
@@ -44,4 +44,5 @@ public static List<Vector2Int> getPossibleKnightMoves(ChessPiece knightPiece)
 
     return knightMoves;
 }
+    /**/
 }

@@ -4,7 +4,8 @@ using UnityEngine;
 
 public static class Pawn
 {
-    public static List<Vector2Int> getPossiblePawnMoves(ChessPiece pawnPiece)
+    /*
+    public static List<Vector2Int> getPossiblePawnMoves(ChessPiece pawnPiece, int[,] miniGameBoard)
     {
         List<Vector2Int> pawnMoves = new List<Vector2Int>();
         int row = pawnPiece.pos.y;
@@ -21,8 +22,6 @@ public static class Pawn
         {
             maxPawnSteps = 2;
         }
-
-        int[,] miniGameBoard = pawnPiece.mainGameDriver.miniGameBoard;
 
         // Finding forward movement options
         for(int i = 0; i < maxPawnSteps; i++)
@@ -149,4 +148,5 @@ public static class Pawn
 
         return false;
     }
+    /**/
 }

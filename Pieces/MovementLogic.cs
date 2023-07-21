@@ -5,6 +5,7 @@ using UnityEngine;
 public static class MovementLogic
 {
 
+/*
 public static List<Vector2Int> gatherPossibleMoves(ChessPiece chessPiece)
 {   
     List<Vector2Int> possibleMoves = new List<Vector2Int>();
@@ -177,5 +178,6 @@ public static List<Vector2Int> getKingMoves(ChessPiece chessPiece)
 
     return kingMoves;
 }
+/**/
 
 }

@@ -14,8 +14,11 @@ public class FEN : MonoBehaviour
     const string rowCord = "12345678";
     public int[,] grid = new int[8, 8];
 
-    void Start() {
-        MGD = this.GetComponent<MainGameDriver>();
+    // -----------------------------------------------------------------------------
+    // FEN Related Functions
+
+    public void InitFenObj(MainGameDriver mainGameDriver) {
+        MGD = mainGameDriver;
 
         FENString = startingFEN;
     }
@@ -53,11 +56,11 @@ public class FEN : MonoBehaviour
     public void convertBoardToString() {
         string outputFEN = "";
 
-        for (int i = 0; i < MGD.miniGameBoard.GetLength(0); i++) {
-            int[] row = MGD.getRow(MGD.miniGameBoard, i);
+        for (int y = 0; y < grid.GetLength(0); y++) {
+            int[] rowValues = getRowValues(grid, y);
             string rowString = "";
 
-            foreach (int val in row) {
+            foreach (int val in rowValues) {
                 string valString = ChessPiece.getPieceLetterFromValue(val);
 
                 rowString += valString;
@@ -86,6 +89,19 @@ public class FEN : MonoBehaviour
         FENStrings[0] = outputFEN;
         FENString = string.Join(" ", FENStrings);
     }
+
+    public int[] getRowValues(int[,] array, int y) {
+        int[] rowValues = new int[array.GetLength(1)];
+
+        for (int x = 0; x < array.GetLength(1); x++) {
+            rowValues[x] = array[x, y];
+        }
+
+        return rowValues;
+    }
+
+    // -------------------------------------------------------------------------
+    // Old Functions
 
     public ChessPiece.Color getActiveColor() {
         ChessPiece.Color activeColor;
